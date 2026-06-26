@@ -1,44 +1,55 @@
-"use client";
+import { getActiveCompetition } from "@/lib/activeCompetition";
+import InviteSection from "./InviteSelection";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const { supabase, competitionId, competition } =
+    await getActiveCompetition();
 
-  async function rebuild() {
+  const { data: members, error } = await supabase
+    .from("competition_members")
+    .select(`
+      role,
+      profiles (
+        id,
+        username
+      )
+    `)
+    .eq("competition_id", competitionId);
 
-    const competitionId = "d77d8175-ff40-4f54-b5a6-95779855a132";
-
-    const response = await fetch("/api/scores/rebuild",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        competitionId
-      })
-    });
-
-    const result = await response.json();
-
-    console.log(result);
-
-    alert(JSON.stringify(result));
+  if (error) {
+    return <main className="p-6">Error: {error.message}</main>;
   }
 
-
   return (
+    <main className="mx-auto max-w-3xl p-6">
+      <h1 className="mb-6 text-3xl font-bold">Configuración</h1>
 
-    <main className="p-6">
+      <section className="mb-8 rounded border p-4">
+        <h2 className="mb-2 text-xl font-semibold">Competición</h2>
+        <p>{competition.name}</p>
+        <p className="text-sm text-gray-600">Temporada {competition.season}</p>
+      </section>
 
-      <button
-        onClick={rebuild}
-        className="bg-black text-white rounded px-4 py-2"
-      >
+      <section className="rounded border p-4">
+        <h2 className="mb-4 text-xl font-semibold">Miembros</h2>
 
-        Recalcular puntuaciones
+        <div className="space-y-2">
+          {members?.map((member) => (
+            <div
+              key={member.profiles.id}
+              className="flex justify-between rounded bg-gray-50 p-3"
+            >
+              <span>
+                {member.role === "admin" ? "👑 " : ""}
+                {member.profiles.username ?? "Usuario sin nombre"}
+              </span>
 
-      </button>
-
+              <span className="text-sm text-gray-500">{member.role}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+      <InviteSection />
     </main>
-
-  )
-
+  );
 }

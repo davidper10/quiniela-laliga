@@ -12,9 +12,14 @@ type Prediction = {
   match_id: string;
   predicted_home_goals: number;
   predicted_away_goals: number;
-  profiles: {
-    username: string | null;
-  } | null;
+  profiles:
+    | {
+        username: string | null;
+      }
+    | {
+        username: string | null;
+      }[]
+    | null;
 };
 
 export default function ComparisonSelector({
@@ -25,14 +30,26 @@ export default function ComparisonSelector({
   predictions: Prediction[];
 }) {
   const users = Array.from(
-    new Set(predictions.map((p) => p.profiles?.username ?? "Usuario"))
+    new Set(
+      predictions.map((prediction) => {
+        const profile = Array.isArray(prediction.profiles)
+          ? prediction.profiles[0]
+          : prediction.profiles;
+
+        return profile?.username ?? "Usuario";
+      })
+    )
   );
 
   const [selectedUser, setSelectedUser] = useState(users[0] ?? "");
 
-  const selectedPredictions = predictions.filter(
-    (p) => (p.profiles?.username ?? "Usuario") === selectedUser
-  );
+  const selectedPredictions = predictions.filter((prediction) => {
+    const profile = Array.isArray(prediction.profiles)
+      ? prediction.profiles[0]
+      : prediction.profiles;
+
+    return (profile?.username ?? "Usuario") === selectedUser;
+  });
 
   return (
     <div className="space-y-6">
