@@ -1,19 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
 import ComparisonSelector from "./ComparisionSelector";
+import { getActiveCompetition } from "@/lib/activeCompetition";
 
-type PageProps = {
-  searchParams: Promise<{
-    competitionId?: string;
-  }>;
-};
-
-export default async function ComparisonPage({ searchParams }: PageProps) {
-  const { competitionId } = await searchParams;
-  const supabase = await createClient();
-
-  if (!competitionId) {
-    return <main className="p-6">Falta competitionId.</main>;
-  }
+export default async function ComparisonPage() {
+  const { supabase, competitionId } = await getActiveCompetition();
 
   const { data: matchday } = await supabase
     .from("matchdays")

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getActiveCompetition } from "@/lib/activeCompetition";
+import BottomNav from "@/components/BottomNav";
 
 export default async function DashboardLayout({
   children,
@@ -38,7 +39,13 @@ export default async function DashboardLayout({
         </div>
       </header>
 
-      {children}
+       {/* Contenido */}
+      <main className="pb-20">
+        {children}
+      </main>
+
+      {/* Solo dashboard */}
+      <BottomNav />
     </div>
   );
 }

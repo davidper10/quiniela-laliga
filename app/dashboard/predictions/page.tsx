@@ -1,28 +1,8 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import PredictionsForm from "./PredictionsForm";
+import { getActiveCompetition } from "@/lib/activeCompetition";
 
-type PageProps = {
-  searchParams: Promise<{
-    competitionId?: string;
-  }>;
-};
-
-export default async function PredictionsPage({ searchParams }: PageProps) {
-  const { competitionId } = await searchParams;
-  const supabase = await createClient();
-
-  if (!competitionId) {
-    return <main className="p-6">Falta competitionId.</main>;
-  }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+export default async function PredictionsPage() {
+  const { supabase, competitionId, user } = await getActiveCompetition();
 
   const { data: matchday, error: matchdayError } = await supabase
     .from("matchdays")
