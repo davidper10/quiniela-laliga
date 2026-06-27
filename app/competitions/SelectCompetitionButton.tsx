@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function SelectCompetitionButton({
   competitionId,
@@ -21,10 +22,11 @@ export default function SelectCompetitionButton({
     const result = await response.json();
 
     if (!response.ok) {
-      alert(result.error ?? "Error seleccionando competición");
+      toast.error(result.error ?? "Error seleccionando competición");
       return;
     }
 
+    toast.success("Competición seleccionada");
     router.push("/dashboard/results");
   }
 

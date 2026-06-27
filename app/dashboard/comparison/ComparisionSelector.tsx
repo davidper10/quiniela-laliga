@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Card from "@/components/ui/Card";
+import Select from "@/components/ui/Select";
+import MatchComparisonCard from "@/components/ui/MatchComparisionCard";
 
 type Match = {
   id: string;
@@ -53,48 +56,34 @@ export default function ComparisonSelector({
 
   return (
     <div className="space-y-6">
-      <select
-        className="w-full rounded border p-3"
+      <Select
         value={selectedUser}
         onChange={(e) => setSelectedUser(e.target.value)}
+        className="w-full max-w-sm"
       >
         {users.map((user) => (
           <option key={user} value={user}>
             {user}
           </option>
         ))}
-      </select>
+      </Select>
 
-      <div className="overflow-x-auto rounded border">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b bg-gray-50">
-              <th className="p-3 text-left">Partido</th>
-              <th className="p-3 text-center">Resultado</th>
-            </tr>
-          </thead>
+      <div className="grid gap-4">
+        {matches.map((match) => {
+          const prediction = selectedPredictions.find(
+            (p) => p.match_id === match.id
+          );
 
-          <tbody>
-            {matches.map((match) => {
-              const prediction = selectedPredictions.find(
-                (p) => p.match_id === match.id
-              );
-
-              return (
-                <tr key={match.id} className="border-b">
-                  <td className="p-3">
-                    {match.home_team} vs {match.away_team}
-                  </td>
-                  <td className="p-3 text-center font-medium">
-                    {prediction
-                      ? `${prediction.predicted_home_goals} - ${prediction.predicted_away_goals}`
-                      : "-"}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+          return (
+            <MatchComparisonCard
+              key={match.id}
+              homeTeam={match.home_team}
+              awayTeam={match.away_team}
+              homeGoals={prediction?.predicted_home_goals}
+              awayGoals={prediction?.predicted_away_goals}
+            />
+          );
+        })}
       </div>
     </div>
   );

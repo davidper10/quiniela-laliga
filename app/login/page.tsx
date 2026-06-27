@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -13,11 +14,11 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
-      alert(error.message);
+      toast.error(error.message)
       return;
     }
 
-    alert("Usuario creado. Revisa tu email si Supabase pide confirmación.");
+    toast.success("Usuario creado. Revisa tu email si Supabase pide confirmación.");
   }
 
   async function signIn() {

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { getActiveCompetition } from "@/lib/activeCompetition";
 import BottomNav from "@/components/BottomNav";
+import Badge from "@/components/ui/Badge";
+import { getActiveCompetition } from "@/lib/activeCompetition";
 
 export default async function DashboardLayout({
   children,
@@ -10,41 +11,66 @@ export default async function DashboardLayout({
   const { competition } = await getActiveCompetition();
 
   return (
-    <div>
-      <header className="border-b px-6 py-4">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-4 flex items-center justify-between gap-4">
+    <div className="min-h-screen bg-black pb-24 text-white">
+      <header className="border-b border-red-950/60 bg-zinc-950 px-6 py-5">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm text-gray-500">Competición activa</p>
-              <h1 className="text-xl font-bold">
-                {competition?.name} · {competition?.season}
-              </h1>
+              <div className="mb-2 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-700 text-2xl">
+                  🏆
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-xl font-black tracking-tight">
+                      LIGA PRO-PRONÓSTICOS
+                    </h1>
+                    <Badge variant="danger">Red Edition</Badge>
+                  </div>
+
+                  <p className="text-sm text-zinc-400">
+                    Competición:{" "}
+                    <span className="font-semibold text-white">
+                      {competition.name}
+                    </span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             <Link
               href="/competitions"
-              className="rounded border px-3 py-2 text-sm"
+              className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
             >
-              Cambiar competición
+              Cambiar
             </Link>
           </div>
 
-          <nav className="flex flex-wrap gap-4 text-sm">
-            <Link href="/dashboard/results">Resultados</Link>
-            <Link href="/dashboard/predictions">Tus pronósticos</Link>
-            <Link href="/dashboard/comparison">Comparador</Link>
-            <Link href="/dashboard/rankings">Clasificación</Link>
-            <Link href="/dashboard/settings">Configuración</Link>
+          <nav className="mt-6 hidden grid-cols-5 gap-3 md:grid">
+            <Link className="rounded-2xl border border-red-600 bg-white/5 px-4 py-4 text-center font-bold" href="/dashboard/results">
+              1. Resultados
+            </Link>
+            <Link className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-center font-bold text-zinc-300 hover:border-red-500" href="/dashboard/predictions">
+              2. Pronósticos
+            </Link>
+            <Link className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-center font-bold text-zinc-300 hover:border-red-500" href="/dashboard/comparison">
+              3. Comparador
+            </Link>
+            <Link className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-center font-bold text-zinc-300 hover:border-red-500" href="/dashboard/rankings">
+              4. Posiciones
+            </Link>
+            <Link className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-center font-bold text-zinc-300 hover:border-red-500" href="/dashboard/settings">
+              5. Admin
+            </Link>
           </nav>
         </div>
       </header>
 
-       {/* Contenido */}
-      <main className="pb-20">
+      <div className="mx-auto max-w-6xl px-4 py-6">
         {children}
-      </main>
+      </div>
 
-      {/* Solo dashboard */}
       <BottomNav />
     </div>
   );

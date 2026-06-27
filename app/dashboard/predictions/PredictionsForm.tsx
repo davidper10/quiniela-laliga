@@ -1,6 +1,11 @@
 "use client";
 
+import Button from "@/components/ui/Button";
 import { useState } from "react";
+import { toast } from "sonner";
+import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
+import MatchPredictionCard from "@/components/ui/MatchPredictionCard";
 
 type Match = {
   id: string;
@@ -66,74 +71,47 @@ export default function PredictionsForm({
     const result = await response.json();
 
     if (!response.ok) {
-      alert(result.error ?? "Error guardando pronósticos");
+      toast.error(result.error ?? "Error guardando pronósticos");
       return;
     }
 
-    alert("Pronósticos guardados");
+    toast.success("Pronósticos guardados");
   }
 
   return (
     <div className="space-y-4">
       {matches.map((match) => (
-        <div key={match.id} className="rounded border p-4">
-          <p className="mb-2 font-medium">
-            {match.home_team} - {match.away_team}
-          </p>
-
-          {isClosed && (
-            <p className="rounded bg-yellow-100 p-3 text-sm">
-              La jornada ya está cerrada. No se pueden modificar pronósticos.
-            </p>
-          )}
-          
-          <div className="flex items-center gap-2">
-            <input
-              className="w-16 rounded border p-2"
-              type="number"
-              min="0"
-              value={values[match.id].home}
-              disabled={isClosed}
-              onChange={(e) =>
-                setValues({
-                  ...values,
-                  [match.id]: {
-                    ...values[match.id],
-                    home: e.target.value,
-                  },
-                })
-              }
-            />
-
-            <span>-</span>
-
-            <input
-              className="w-16 rounded border p-2"
-              type="number"
-              min="0"
-              value={values[match.id].away}
-              disabled={isClosed}
-              onChange={(e) =>
-                setValues({
-                  ...values,
-                  [match.id]: {
-                    ...values[match.id],
-                    away: e.target.value,
-                  },
-                })
-              }
-            />
-          </div>
-        </div>
+        <MatchPredictionCard
+          key={match.id}
+          homeTeam={match.home_team}
+          awayTeam={match.away_team}
+          homeValue={values[match.id].home}
+          awayValue={values[match.id].away}
+          disabled={isClosed}
+          onHomeChange={(value) =>
+            setValues({
+              ...values,
+              [match.id]: {
+                ...values[match.id],
+                home: value,
+              },
+            })
+          }
+          onAwayChange={(value) =>
+            setValues({
+              ...values,
+              [match.id]: {
+                ...values[match.id],
+                away: value,
+              },
+            })
+          }
+        />
       ))}
 
-      <button
-        onClick={savePredictions}
-        disabled={isClosed}
-        className="rounded bg-black px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
-      >
+      <Button onClick={savePredictions} disabled={isClosed}>
         {isClosed ? "Jornada cerrada 🔒" : "Guardar pronósticos"}
-      </button>
+      </Button>
     </div>
   );
 }

@@ -1,18 +1,43 @@
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { getActiveCompetition } from "@/lib/activeCompetition";
+import MatchdaySelector from "@/components/MatchdaySelector";
+import Card from "@/components/ui/Card";
+import Badge from "@/components/ui/Badge";
+import MatchResultCard from "@/components/ui/MatchResultCard";
 
-export default async function ResultsPage() {
-  const {
-    supabase,
-    competitionId
-  } = await getActiveCompetition();
+type ResultsPageProps = {
+  searchParams: Promise<{
+    j?: string;
+  }>;
+};
 
-  if (!competitionId) {
-    return <main className="p-6">Falta competitionId.</main>;
+function statusBadge(status: string) {
+  if (status === "finished") return <Badge variant="success">Finalizado</Badge>;
+  if (status === "live") return <Badge variant="danger">En juego</Badge>;
+  if (status === "closed") return <Badge variant="warning">Cerrada</Badge>;
+  return <Badge>Programado</Badge>;
+}
+
+export default async function ResultsPage({ searchParams }: ResultsPageProps) {
+  const { j } = await searchParams;
+  const { supabase, competitionId } = await getActiveCompetition();
+
+  const { data: matchdays, error: matchdaysError } = await supabase
+    .from("matchdays")
+    .select("id, number")
+    .eq("competition_id", competitionId)
+    .order("number", { ascending: true });
+
+  if (matchdaysError) {
+    return <main>Error: {matchdaysError.message}</main>;
   }
 
-  const { data: matchdays, error } = await supabase
+  const selectedMatchdayId = j ?? matchdays?.[0]?.id;
+
+  if (!selectedMatchdayId) {
+    return <p>No hay jornadas todavía.</p>;
+  }
+
+  const { data: currentMatchday, error } = await supabase
     .from("matchdays")
     .select(`
       id,
@@ -30,55 +55,57 @@ export default async function ResultsPage() {
       )
     `)
     .eq("competition_id", competitionId)
-    .order("number", { ascending: true });
+    .eq("id", selectedMatchdayId)
+    .single();
 
   if (error) {
-    return <main className="p-6">Error: {error.message}</main>;
+    return <main>Error: {error.message}</main>;
   }
 
-  const currentMatchday = matchdays?.[0];
-
   return (
-    <main className="mx-auto max-w-3xl p-6">
-      <h1 className="mb-6 text-3xl font-bold">Resultados</h1>
-
-      {!currentMatchday ? (
-        <p>No hay jornadas todavía.</p>
-      ) : (
-        <>
-          <h2 className="mb-2 text-xl font-semibold">
-            Jornada {currentMatchday.number}
-          </h2>
-
-          <p className="mb-4 text-sm text-gray-600">
-            Estado: {currentMatchday.status}
+    <main>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-widest text-red-500">
+            Jornada
           </p>
+          <h1 className="text-4xl font-black">
+            Resultados J{currentMatchday.number}
+          </h1>
+        </div>
 
-          <div className="space-y-3">
-            {currentMatchday.matches.map((match) => (
-              <div key={match.id} className="rounded border p-4">
-                <div className="flex justify-between gap-4">
-                  <div>
-                    <p className="font-medium">
-                      {match.home_team} - {match.away_team}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {new Date(match.kickoff_at).toLocaleString("es-ES")}
-                    </p>
-                  </div>
+        <MatchdaySelector
+          matchdays={matchdays ?? []}
+          selected={selectedMatchdayId}
+        />
+      </div>
 
-                  <div className="text-right">
-                    <p className="font-bold">
-                      {match.home_goals ?? "-"} - {match.away_goals ?? "-"}
-                    </p>
-                    <p className="text-sm text-gray-600">{match.status}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+      <Card className="mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-zinc-400">Estado de la jornada</p>
+            <p className="mt-1 text-lg font-bold">
+              Jornada {currentMatchday.number}
+            </p>
           </div>
-        </>
-      )}
+
+          {statusBadge(currentMatchday.status)}
+        </div>
+      </Card>
+
+      <div className="grid gap-3">
+        {currentMatchday.matches.map((match) => (
+          <MatchResultCard
+            key={match.id}
+            homeTeam={match.home_team}
+            awayTeam={match.away_team}
+            homeGoals={match.home_goals}
+            awayGoals={match.away_goals}
+            kickoffAt={match.kickoff_at}
+            status={match.status}
+          />
+        ))}
+      </div>
     </main>
   );
 }
