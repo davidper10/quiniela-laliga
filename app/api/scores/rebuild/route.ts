@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { calculatePoints } from "@/lib/scoring";
+import { generatePenalties } from "@/lib/penalties";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  const { competitionId } = await request.json();
+  const { competitionId, matchdayId } = await request.json();
 
   if (!competitionId) {
     return NextResponse.json({ error: "Falta competitionId" }, { status: 400 });
@@ -92,6 +93,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, updated: 0 });
   }
 
+  let penaltiesCreated = 0;
+
+  if (matchdayId) {
+    const result = await generatePenalties({
+      supabase,
+      competitionId,
+      matchdayId,
+    });
+
+    penaltiesCreated = result.created;
+  }
+
   const { error: upsertError } = await supabase.from("scores").upsert(rows, {
     onConflict: "competition_id,user_id,match_id",
   });
@@ -100,5 +113,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: upsertError.message }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, updated: rows.length });
+  return NextResponse.json({
+    ok: true,
+    updated: rows.length,
+    penaltiesCreated,
+  });
 }

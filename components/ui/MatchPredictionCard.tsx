@@ -1,4 +1,5 @@
 import Input from "@/components/ui/Input";
+import TeamCrest from "./TeamCrest";
 
 type Props = {
   homeTeam: string;
@@ -36,7 +37,7 @@ export default function MatchPredictionCard({
     <div className="rounded-2xl border border-white/10 bg-zinc-950 p-4 shadow-xl">
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          {crest(homeTeam)}
+          <TeamCrest team={homeTeam} />
           <p className="hidden truncate font-black lg:block">{homeTeam}</p>
         </div>
 
@@ -66,7 +67,7 @@ export default function MatchPredictionCard({
           <p className="hidden truncate text-right font-black lg:block">
             {awayTeam}
           </p>
-          {crest(awayTeam)}
+          <TeamCrest team={awayTeam} />
         </div>
       </div>
     </div>

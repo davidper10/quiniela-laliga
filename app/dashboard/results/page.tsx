@@ -3,6 +3,7 @@ import MatchdaySelector from "@/components/MatchdaySelector";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import MatchResultCard from "@/components/ui/MatchResultCard";
+import MatchdayStatusCard from "@/components/ui/MatchdayStatusCard";
 
 type ResultsPageProps = {
   searchParams: Promise<{
@@ -80,18 +81,11 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
         />
       </div>
 
-      <Card className="mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-zinc-400">Estado de la jornada</p>
-            <p className="mt-1 text-lg font-bold">
-              Jornada {currentMatchday.number}
-            </p>
-          </div>
-
-          {statusBadge(currentMatchday.status)}
-        </div>
-      </Card>
+      <MatchdayStatusCard
+        number={currentMatchday.number}
+        status={currentMatchday.status}
+        firstKickoffAt={currentMatchday.first_kickoff_at}
+      />
 
       <div className="grid gap-3">
         {currentMatchday.matches.map((match) => (

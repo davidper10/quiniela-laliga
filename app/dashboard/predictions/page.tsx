@@ -1,6 +1,7 @@
 import { getActiveCompetition } from "@/lib/activeCompetition";
 import MatchdaySelector from "@/components/MatchdaySelector";
 import PredictionsForm from "./PredictionsForm";
+import MatchdayStatusCard from "@/components/ui/MatchdayStatusCard";
 
 type Props = {
   searchParams: Promise<{
@@ -40,6 +41,7 @@ export default async function PredictionsPage({ searchParams }: Props) {
       id,
       number,
       status,
+      first_kickoff_at,
       matches (
         id,
         home_team,
@@ -98,12 +100,18 @@ export default async function PredictionsPage({ searchParams }: Props) {
         />
         </div>
 
+        <MatchdayStatusCard
+            number={matchday.number}
+            status={matchday.status}
+            firstKickoffAt={matchday.first_kickoff_at}
+        />
+
         <PredictionsForm
-        competitionId={competitionId}
-        matchdayId={matchday.id}
-        matches={matchday.matches}
-        initialPredictions={predictions ?? []}
-        isClosed={isClosed}
+            competitionId={competitionId}
+            matchdayId={matchday.id}
+            matches={matchday.matches}
+            initialPredictions={predictions ?? []}
+            isClosed={isClosed}
         />
     </main>
     );

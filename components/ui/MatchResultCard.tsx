@@ -1,4 +1,5 @@
 import Badge from "@/components/ui/Badge";
+import TeamCrest from "./TeamCrest";
 
 type Props = {
   homeTeam: string;
@@ -32,13 +33,38 @@ export default function MatchResultCard({
 }: Props) {
   const finished = status === "finished";
 
-  return (
+const homeWon =
+  homeGoals !== null &&
+  homeGoals !== undefined &&
+  awayGoals !== null &&
+  awayGoals !== undefined &&
+  homeGoals > awayGoals;
+
+const awayWon =
+  homeGoals !== null &&
+  homeGoals !== undefined &&
+  awayGoals !== null &&
+  awayGoals !== undefined &&
+  awayGoals > homeGoals;
+
+const isDraw =
+  homeGoals !== null &&
+  homeGoals !== undefined &&
+  awayGoals !== null &&
+  awayGoals !== undefined &&
+  homeGoals === awayGoals;
+
+return (
     <div className="rounded-2xl border border-white/10 bg-zinc-950 p-4 shadow-xl">
       <div className="grid gap-4 sm:grid-cols-[1fr_auto_1fr_auto] sm:items-center">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:contents">
           <div className="flex min-w-0 items-center gap-3">
-            {crest(homeTeam)}
-            <p className="hidden truncate font-black lg:block">
+            <TeamCrest team={homeTeam} />
+            <p
+                className={`hidden truncate font-black lg:block ${
+                    homeWon ? "text-red-400" : "text-white"
+                }`}
+            >
                 {homeTeam}
             </p>
           </div>
@@ -56,10 +82,14 @@ export default function MatchResultCard({
           </div>
 
           <div className="flex min-w-0 items-center justify-end gap-3">
-            <p className="hidden truncate text-right font-black lg:block">
+            <p
+                className={`hidden truncate text-right font-black lg:block ${
+                    awayWon ? "text-red-400" : "text-white"
+                }`}
+            >
                 {awayTeam}
             </p>
-            {crest(awayTeam)}
+            <TeamCrest team={awayTeam} />
           </div>
         </div>
 

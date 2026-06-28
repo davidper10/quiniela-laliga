@@ -21,6 +21,11 @@ export default async function RankingsPage({ searchParams }: Props) {
     .eq("competition_id", competitionId)
     .order("number", { ascending: true });
 
+  const { data: penaltiesConfig } = await supabase
+    .from("penalties_config")
+    .select("position, amount_eur")
+    .eq("competition_id", competitionId);
+
   const selectedMatchdayId = j ?? matchdays?.[0]?.id;
 
   let scoresQuery = supabase
@@ -91,6 +96,10 @@ export default async function RankingsPage({ searchParams }: Props) {
     return a.username.localeCompare(b.username);
   });
 
+  function getPenaltyForPosition(position: number) {
+    return penaltiesConfig?.find((p) => p.position === position);
+}
+
   return (
     <main>
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -150,34 +159,44 @@ export default async function RankingsPage({ searchParams }: Props) {
             </p>
             </Card>
         ) : (
-            ranking.map((row, index) => (
-            <Card key={row.username}>
-                <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-600 text-xl font-black">
-                    {index + 1}
-                    </div>
+            ranking.map((row, index) => {
+                const position = index + 1;
+                const penalty = getPenaltyForPosition(position);
 
-                    <div>
-                    <p className="text-lg font-black">{row.username}</p>
-                    <div className="mt-2 flex gap-2">
-                        <Badge variant="success">Exactos {row.exactHits}</Badge>
-                        <Badge>Parciales {row.partialHits}</Badge>
-                    </div>
-                    </div>
-                </div>
+                return (
+                    <Card key={row.username}>
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-600 text-xl font-black">
+                            {position}
+                        </div>
 
-                <div className="text-right">
-                    <p className="text-3xl font-black text-white">
-                    {row.points}
-                    </p>
-                    <p className="text-xs font-bold uppercase text-zinc-500">
-                    puntos
-                    </p>
-                </div>
-                </div>
-            </Card>
-            ))
+                        <div>
+                            <p className="text-lg font-black">{row.username}</p>
+
+                            {penalty && (
+                            <p className="mt-2 inline-block rounded-md border border-red-500/40 bg-red-500/10 px-2 py-1 text-xs font-black text-red-400">
+                                Zona de multa ({Number(penalty.amount_eur).toFixed(2)}€)
+                            </p>
+                            )}
+
+                            <div className="mt-2 flex gap-2">
+                            <Badge variant="success">Exactos {row.exactHits}</Badge>
+                            <Badge>Parciales {row.partialHits}</Badge>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div className="text-right">
+                        <p className="text-3xl font-black text-white">{row.points}</p>
+                        <p className="text-xs font-bold uppercase text-zinc-500">
+                            puntos
+                        </p>
+                        </div>
+                    </div>
+                    </Card>
+                );
+                })
         )}
         </div>
     </main>
