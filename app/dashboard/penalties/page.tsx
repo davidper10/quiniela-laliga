@@ -1,0 +1,130 @@
+import { getActiveCompetition } from "@/lib/activeCompetition";
+import Card from "@/components/ui/Card";
+import Badge from "@/components/ui/Badge";
+import MarkPaidButton from "./MarkPaidButton";
+
+export default async function PenaltiesPage() {
+  const { supabase, competitionId } = await getActiveCompetition();
+
+  const { data: penalties, error } = await supabase
+    .from("penalties")
+    .select(`
+      id,
+      amount_eur,
+      status,
+      reason,
+      created_at,
+      paid_at,
+      profiles (
+        username
+      ),
+      matchdays (
+        number
+      )
+    `)
+    .eq("competition_id", competitionId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return <main>Error: {error.message}</main>;
+  }
+
+  const pending = penalties?.filter((p) => p.status === "pending") ?? [];
+  const paid = penalties?.filter((p) => p.status === "paid") ?? [];
+
+  const pendingTotal = pending.reduce(
+    (sum, p) => sum + Number(p.amount_eur),
+    0
+  );
+
+  const potTotal = paid.reduce(
+    (sum, p) => sum + Number(p.amount_eur),
+    0
+  );
+
+  return (
+    <main>
+      <div className="mb-6">
+        <p className="text-sm font-bold uppercase tracking-widest text-red-500">
+          Caja
+        </p>
+
+        <h1 className="text-4xl font-black">Multas</h1>
+
+        <p className="mt-2 text-sm text-zinc-400">
+          Control de multas pendientes y bote acumulado.
+        </p>
+      </div>
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-2">
+        <Card>
+          <p className="text-sm font-bold uppercase text-zinc-500">
+            Bote acumulado
+          </p>
+          <p className="mt-2 text-4xl font-black text-white">
+            {potTotal.toFixed(2)}€
+          </p>
+        </Card>
+
+        <Card>
+          <p className="text-sm font-bold uppercase text-zinc-500">
+            Pendiente de cobro
+          </p>
+          <p className="mt-2 text-4xl font-black text-red-500">
+            {pendingTotal.toFixed(2)}€
+          </p>
+        </Card>
+      </div>
+
+      <Card>
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-widest text-red-500">
+              Pendientes
+            </p>
+            <h2 className="mt-2 text-2xl font-black">
+              Multas por pagar
+            </h2>
+          </div>
+
+          <Badge>{pending.length} pendientes</Badge>
+        </div>
+
+        <div className="grid gap-3">
+          {pending.length === 0 ? (
+            <p className="text-zinc-400">No hay multas pendientes.</p>
+          ) : (
+            pending.map((penalty) => (
+              <div
+                key={penalty.id}
+                className="flex items-center justify-between rounded-2xl border border-white/10 bg-black p-4"
+              >
+                <div>
+                  <p className="font-black">
+                    {penalty.profiles?.username ?? "Usuario"}
+                  </p>
+
+                  <p className="text-sm text-zinc-500">
+                    Jornada {penalty.matchdays?.number ?? "-"} ·{" "}
+                    {penalty.reason}
+                  </p>
+                </div>
+
+                <div className="text-right">
+                  <p className="text-2xl font-black text-red-500">
+                    {Number(penalty.amount_eur).toFixed(2)}€
+                  </p>
+                  <Badge variant="warning">Pendiente</Badge>
+                </div>
+
+                <div className="mt-3">
+                    <MarkPaidButton penaltyId={penalty.id} />
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </Card>
+    </main>
+  );
+}
