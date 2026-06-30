@@ -40,14 +40,24 @@ export default async function ComparisonPage({
       id,
       number,
       status,
-      matches(
+      matches (
         id,
         home_team,
         away_team,
         kickoff_at,
         home_goals,
         away_goals,
-        status
+        status,
+        home:teams!matches_home_team_id_fkey (
+            name,
+            short_name,
+            logo_url
+        ),
+        away:teams!matches_away_team_id_fkey (
+            name,
+            short_name,
+            logo_url
+        )
       )
     `)
     .eq("id", selectedMatchdayId)

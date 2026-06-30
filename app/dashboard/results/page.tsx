@@ -52,7 +52,17 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
         kickoff_at,
         home_goals,
         away_goals,
-        status
+        status,
+        home:teams!matches_home_team_id_fkey (
+          name,
+          short_name,
+          logo_url
+        ),
+        away:teams!matches_away_team_id_fkey (
+          name,
+          short_name,
+          logo_url
+        )
       )
     `)
     .eq("competition_id", competitionId)
@@ -89,15 +99,18 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
 
       <div className="grid gap-3">
         {currentMatchday.matches.map((match) => (
-          <MatchResultCard
-            key={match.id}
-            homeTeam={match.home_team}
-            awayTeam={match.away_team}
-            homeGoals={match.home_goals}
-            awayGoals={match.away_goals}
-            kickoffAt={match.kickoff_at}
-            status={match.status}
-          />
+        
+        <MatchResultCard
+          key={match.id}
+          homeTeam={match.home?.name ?? match.home_team}
+          awayTeam={match.away?.name ?? match.away_team}
+          homeLogoUrl={match.home?.logo_url}
+          awayLogoUrl={match.away?.logo_url}
+          homeGoals={match.home_goals}
+          awayGoals={match.away_goals}
+          kickoffAt={match.kickoff_at}
+          status={match.status}
+        />
         ))}
       </div>
     </main>

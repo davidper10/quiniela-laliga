@@ -4,6 +4,8 @@ import PredictionScoreInputs from "@/components/match/PredictionScoreInputs";
 type Props = {
   homeTeam: string;
   awayTeam: string;
+  homeLogoUrl?: string | null;
+  awayLogoUrl?: string | null;
   homeValue: string;
   awayValue: string;
   disabled?: boolean;
@@ -14,6 +16,8 @@ type Props = {
 export default function MatchPredictionCard({
   homeTeam,
   awayTeam,
+  homeLogoUrl, 
+  awayLogoUrl, 
   homeValue,
   awayValue,
   disabled = false,
@@ -24,6 +28,8 @@ export default function MatchPredictionCard({
     <MatchCard
       homeTeam={homeTeam}
       awayTeam={awayTeam}
+      homeLogoUrl={homeLogoUrl}
+      awayLogoUrl={awayLogoUrl}
       center={
         <PredictionScoreInputs
           homeValue={homeValue}

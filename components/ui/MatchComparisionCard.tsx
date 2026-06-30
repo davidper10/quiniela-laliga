@@ -4,6 +4,8 @@ import ResultScore from "@/components/match/ResultScore";
 type Props = {
   homeTeam: string;
   awayTeam: string;
+  homeLogoUrl?: string | null;
+  awayLogoUrl?: string | null;
   homeGoals?: number | null;
   awayGoals?: number | null;
 };
@@ -11,6 +13,8 @@ type Props = {
 export default function MatchComparisonCard({
   homeTeam,
   awayTeam,
+  homeLogoUrl, 
+  awayLogoUrl,
   homeGoals,
   awayGoals,
 }: Props) {
@@ -18,6 +22,8 @@ export default function MatchComparisonCard({
     <MatchCard
       homeTeam={homeTeam}
       awayTeam={awayTeam}
+      homeLogoUrl={homeLogoUrl}
+      awayLogoUrl={awayLogoUrl}
       center={<ResultScore homeGoals={homeGoals} awayGoals={awayGoals} />}
     />
   );

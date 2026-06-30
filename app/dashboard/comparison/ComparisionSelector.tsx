@@ -9,8 +9,17 @@ type Match = {
   id: string;
   home_team: string;
   away_team: string;
+  home?: {
+    name: string;
+    short_name: string;
+    logo_url: string | null;
+  } | null;
+  away?: {
+    name: string;
+    short_name: string;
+    logo_url: string | null;
+  } | null;
 };
-
 type Prediction = {
   match_id: string;
   predicted_home_goals: number;
@@ -77,8 +86,10 @@ export default function ComparisonSelector({
           return (
             <MatchComparisonCard
               key={match.id}
-              homeTeam={match.home_team}
-              awayTeam={match.away_team}
+              homeTeam={match.home?.name ?? match.home_team}
+              awayTeam={match.away?.name ?? match.away_team}
+              homeLogoUrl={match.home?.logo_url}
+              awayLogoUrl={match.away?.logo_url}
               homeGoals={prediction?.predicted_home_goals}
               awayGoals={prediction?.predicted_away_goals}
             />

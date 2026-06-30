@@ -46,8 +46,18 @@ export default async function PredictionsPage({ searchParams }: Props) {
         id,
         home_team,
         away_team,
-        kickoff_at
-      )
+        kickoff_at,
+        home:teams!matches_home_team_id_fkey (
+            name,
+            short_name,
+            logo_url
+        ),
+        away:teams!matches_away_team_id_fkey (
+            name,
+            short_name,
+            logo_url
+        )
+    )
     `)
     .eq("competition_id", competitionId)
     .eq("id", selectedMatchdayId)

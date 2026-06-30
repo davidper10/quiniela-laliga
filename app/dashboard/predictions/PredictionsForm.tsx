@@ -12,6 +12,16 @@ type Match = {
   home_team: string;
   away_team: string;
   kickoff_at: string;
+  home?: {
+    name: string;
+    short_name: string;
+    logo_url: string | null;
+  } | null;
+  away?: {
+    name: string;
+    short_name: string;
+    logo_url: string | null;
+  } | null;
 };
 
 type Prediction = {
@@ -83,8 +93,10 @@ export default function PredictionsForm({
       {matches.map((match) => (
         <MatchPredictionCard
           key={match.id}
-          homeTeam={match.home_team}
-          awayTeam={match.away_team}
+          homeTeam={match.home?.name ?? match.home_team}
+          awayTeam={match.away?.name ?? match.away_team}
+          homeLogoUrl={match.home?.logo_url}
+          awayLogoUrl={match.away?.logo_url}
           homeValue={values[match.id].home}
           awayValue={values[match.id].away}
           disabled={isClosed}

@@ -125,6 +125,54 @@ export default async function PenaltiesPage() {
           )}
         </div>
       </Card>
+
+      <Card className="mt-6">
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-widest text-red-500">
+              Historial
+            </p>
+            <h2 className="mt-2 text-2xl font-black">
+              Multas cobradas
+            </h2>
+          </div>
+
+          <Badge variant="success">{paid.length} cobradas</Badge>
+        </div>
+
+        <div className="grid gap-3">
+          {paid.length === 0 ? (
+            <p className="text-zinc-400">Todavía no hay multas cobradas.</p>
+          ) : (
+            paid.map((penalty) => (
+              <div
+                key={penalty.id}
+                className="flex items-center justify-between rounded-2xl border border-white/10 bg-black p-4"
+              >
+                <div>
+                  <p className="font-black">
+                    {penalty.profiles?.username ?? "Usuario"}
+                  </p>
+
+                  <p className="text-sm text-zinc-500">
+                    Jornada {penalty.matchdays?.number ?? "-"} ·{" "}
+                    {penalty.paid_at
+                      ? new Date(penalty.paid_at).toLocaleDateString("es-ES")
+                      : "Pagada"}
+                  </p>
+                </div>
+
+                <div className="text-right">
+                  <p className="text-2xl font-black text-emerald-400">
+                    {Number(penalty.amount_eur).toFixed(2)}€
+                  </p>
+                  <Badge variant="success">Cobrada</Badge>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </Card>
     </main>
   );
 }

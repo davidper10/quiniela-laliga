@@ -1,32 +1,49 @@
 import Image from "next/image";
 
+type Props = {
+  team: string;
+  logoUrl?: string | null;
+  size?: number;
+};
+
 export default function TeamCrest({
   team,
   logoUrl,
-}: {
-  team: string;
-  logoUrl?: string | null;
-}) {
+  size = 44,
+}: Props) {
+  if (logoUrl) {
+    return (
+      <div
+        style={{ width: size, height: size }}
+        className="flex items-center justify-center"
+      >
+        <Image
+          src={logoUrl}
+          alt={team}
+          width={size}
+          height={size}
+          className="max-h-full max-w-full object-contain"
+        />
+      </div>
+    );
+  }
+
   const initials = team
     .split(" ")
     .map((w) => w[0])
     .join("")
-    .slice(0, 2)
+    .slice(0, 3)
     .toUpperCase();
 
   return (
-    <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-zinc-900 text-sm font-black sm:h-14 sm:w-14 sm:text-lg">
-      {logoUrl ? (
-        <Image
-          src={logoUrl}
-          alt={team}
-          width={56}
-          height={56}
-          className="h-full w-full object-contain p-1"
-        />
-      ) : (
-        initials
-      )}
+    <div
+      className="flex items-center justify-center rounded-full bg-red-600 font-black text-white"
+      style={{
+        width: size,
+        height: size,
+      }}
+    >
+      {initials}
     </div>
   );
 }
