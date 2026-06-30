@@ -1,6 +1,7 @@
 import { getActiveCompetition } from "@/lib/activeCompetition";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import { getRanking } from "@/lib/ranking";
 
 export default async function HomePage() {
   const { supabase, competitionId, user, competition } =
@@ -72,63 +73,13 @@ export default async function HomePage() {
         0
     );
 
-    const { data: scores } = await supabase
-        .from("scores")
-        .select(`
-            points,
-            exact_score,
-            one_team_score,
-            correct_outcome,
-            correct_goal_diff,
-            user_id,
-            profiles (
-            username
-            )
-        `)
-        .eq("competition_id", competitionId);
-
-    const totals = new Map<
-        string,
-        {
-            username: string;
-            points: number;
-            exactHits: number;
-            partialHits: number;
-        }
-    >();
-
-    scores?.forEach((score) => {
-    const username = score.profiles?.username ?? "Usuario";
-
-    const current = totals.get(score.user_id) ?? {
-        username,
-        points: 0,
-        exactHits: 0,
-        partialHits: 0,
-    };
-
-    current.points += score.points;
-    if (score.exact_score) current.exactHits += 1;
-
-    if (
-        score.one_team_score ||
-        score.correct_outcome ||
-        score.correct_goal_diff
-    ) {
-        current.partialHits += 1;
-    }
-
-    totals.set(score.user_id, current);
+    const ranking = await getRanking({
+      supabase,
+      competitionId,
+      mode: "global",
     });
 
-    const topRanking = Array.from(totals.values())
-    .sort((a, b) => {
-        if (b.points !== a.points) return b.points - a.points;
-        if (b.exactHits !== a.exactHits) return b.exactHits - a.exactHits;
-        if (b.partialHits !== a.partialHits) return b.partialHits - a.partialHits;
-        return a.username.localeCompare(b.username);
-    })
-    .slice(0, 3);
+    const topRanking = ranking.slice(0, 3);
 
     const { data: penaltiesConfig } = await supabase
         .from("penalties_config")
@@ -139,8 +90,7 @@ export default async function HomePage() {
     const penaltyZone =
         penaltiesConfig
             ?.map((config) => {
-                const user = Array.from(totals.values())
-                    .sort((a, b) => b.points - a.points)[config.position - 1];
+                const user = ranking[config.position - 1];
 
                 if (!user) return null;
 

@@ -2,6 +2,7 @@ import { getActiveCompetition } from "@/lib/activeCompetition";
 import MatchdaySelector from "@/components/MatchdaySelector";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import { getRanking } from "@/lib/ranking";
 
 type Props = {
   searchParams: Promise<{
@@ -28,73 +29,12 @@ export default async function RankingsPage({ searchParams }: Props) {
 
   const selectedMatchdayId = j ?? matchdays?.[0]?.id;
 
-  let scoresQuery = supabase
-    .from("scores")
-    .select(`
-      points,
-      exact_score,
-      one_team_score,
-      correct_outcome,
-      correct_goal_diff,
-      user_id,
-      profiles (
-        username
-      ),
-      matches!inner (
-        matchday_id
-      )
-    `)
-    .eq("competition_id", competitionId);
-
-  if (mode === "jornada" && selectedMatchdayId) {
-    scoresQuery = scoresQuery.eq("matches.matchday_id", selectedMatchdayId);
-  }
-
-  const { data: scores, error } = await scoresQuery;
-
-  if (error) {
-    return <main className="p-6">Error: {error.message}</main>;
-  }
-
-  const totals = new Map<
-    string,
-    {
-      username: string;
-      points: number;
-      exactHits: number;
-      partialHits: number;
-    }
-  >();
-
-  scores?.forEach((score) => {
-    const username = score.profiles?.username ?? "Usuario";
-
-    const current = totals.get(score.user_id) ?? {
-      username,
-      points: 0,
-      exactHits: 0,
-      partialHits: 0,
-    };
-
-    current.points += score.points;
-    if (score.exact_score) current.exactHits += 1;
-    if (
-      score.one_team_score ||
-      score.correct_outcome ||
-      score.correct_goal_diff
-    ) {
-      current.partialHits += 1;
-    }
-
-    totals.set(score.user_id, current);
-  });
-
-  const ranking = Array.from(totals.values()).sort((a, b) => {
-    if (b.points !== a.points) return b.points - a.points;
-    if (b.exactHits !== a.exactHits) return b.exactHits - a.exactHits;
-    if (b.partialHits !== a.partialHits) return b.partialHits - a.partialHits;
-    return a.username.localeCompare(b.username);
-  });
+  const ranking = await getRanking({
+    supabase,
+    competitionId,
+    mode,
+    matchdayId: selectedMatchdayId,
+});
 
   function getPenaltyForPosition(position: number) {
     return penaltiesConfig?.find((p) => p.position === position);

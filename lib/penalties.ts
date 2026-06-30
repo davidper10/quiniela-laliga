@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { getRanking } from "@/lib/ranking";
 
 type GeneratePenaltiesParams = {
   supabase: SupabaseClient;
@@ -24,69 +25,11 @@ export async function generatePenalties({
     return { created: 0 };
   }
 
-  const { data: scores, error: scoresError } = await supabase
-    .from("scores")
-    .select(`
-      points,
-      exact_score,
-      one_team_score,
-      correct_outcome,
-      correct_goal_diff,
-      user_id,
-      profiles (
-        username
-      ),
-      matches!inner (
-        matchday_id
-      )
-    `)
-    .eq("competition_id", competitionId)
-    .eq("matches.matchday_id", matchdayId);
-
-  if (scoresError) {
-    throw new Error(scoresError.message);
-  }
-
-  const totals = new Map<
-    string,
-    {
-      userId: string;
-      username: string;
-      points: number;
-      exactHits: number;
-      partialHits: number;
-    }
-  >();
-
-  scores?.forEach((score) => {
-    const username = score.profiles?.username ?? "Usuario";
-
-    const current = totals.get(score.user_id) ?? {
-      userId: score.user_id,
-      username,
-      points: 0,
-      exactHits: 0,
-      partialHits: 0,
-    };
-
-    current.points += score.points;
-    if (score.exact_score) current.exactHits += 1;
-    if (
-      score.one_team_score ||
-      score.correct_outcome ||
-      score.correct_goal_diff
-    ) {
-      current.partialHits += 1;
-    }
-
-    totals.set(score.user_id, current);
-  });
-
-  const ranking = Array.from(totals.values()).sort((a, b) => {
-    if (b.points !== a.points) return b.points - a.points;
-    if (b.exactHits !== a.exactHits) return b.exactHits - a.exactHits;
-    if (b.partialHits !== a.partialHits) return b.partialHits - a.partialHits;
-    return a.username.localeCompare(b.username);
+  const ranking = await getRanking({
+    supabase,
+    competitionId,
+    mode: "jornada",
+    matchdayId,
   });
 
   const rows = config
