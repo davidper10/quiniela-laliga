@@ -2,6 +2,8 @@ import { getActiveCompetition } from "@/lib/activeCompetition";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import InviteSection from "./InviteSelection";
+import RebuildScoresButton from "./RebuildScoresButton";
+import PenaltiesConfig from "./PenaltiesConfig";
 
 export default async function SettingsPage() {
   const { supabase, competitionId, competition } =
@@ -17,6 +19,20 @@ export default async function SettingsPage() {
       )
     `)
     .eq("competition_id", competitionId);
+
+  const { data: currentMatchday } = await supabase
+    .from("matchdays")
+    .select("id, number")
+    .eq("competition_id", competitionId)
+    .order("number", { ascending: true })
+    .limit(1)
+    .single();
+
+  const { data: penaltiesConfig } = await supabase
+    .from("penalties_config")
+    .select("id, position, amount_eur")
+    .eq("competition_id", competitionId)
+    .order("position", { ascending: true });
 
   if (error) {
     return <main>Error: {error.message}</main>;
@@ -48,6 +64,34 @@ export default async function SettingsPage() {
             Temporada {competition.season}
           </p>
         </Card>
+
+        <Card>
+            <p className="text-sm font-bold uppercase tracking-widest text-red-500">
+                Jornada
+            </p>
+
+            <h2 className="mt-2 text-2xl font-black">
+                Recalcular puntuaciones
+            </h2>
+
+            <p className="mt-1 text-sm text-zinc-400">
+                Calcula puntos y genera multas según la configuración actual.
+            </p>
+
+            {currentMatchday && (
+                <div className="mt-5">
+                <RebuildScoresButton
+                    competitionId={competitionId}
+                    matchdayId={currentMatchday.id}
+                />
+                </div>
+            )}
+        </Card>
+
+        <PenaltiesConfig
+            competitionId={competitionId}
+            initialPenalties={penaltiesConfig ?? []}
+        />
 
         <Card>
           <div className="mb-5 flex items-center justify-between">
