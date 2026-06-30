@@ -1,5 +1,6 @@
 import Badge from "@/components/ui/Badge";
-import TeamCrest from "./TeamCrest";
+import MatchCard from "@/components/match/MatchCard";
+import ResultScore from "@/components/match/ResultScore";
 
 type Props = {
   homeTeam: string;
@@ -9,19 +10,6 @@ type Props = {
   kickoffAt?: string;
   status?: string;
 };
-
-function crest(team: string) {
-  return (
-    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-zinc-900 text-sm font-black sm:h-14 sm:w-14 sm:text-lg">
-      {team
-        .split(" ")
-        .map((w) => w[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()}
-    </div>
-  );
-}
 
 export default function MatchResultCard({
   homeTeam,
@@ -33,78 +21,24 @@ export default function MatchResultCard({
 }: Props) {
   const finished = status === "finished";
 
-const homeWon =
-  homeGoals !== null &&
-  homeGoals !== undefined &&
-  awayGoals !== null &&
-  awayGoals !== undefined &&
-  homeGoals > awayGoals;
-
-const awayWon =
-  homeGoals !== null &&
-  homeGoals !== undefined &&
-  awayGoals !== null &&
-  awayGoals !== undefined &&
-  awayGoals > homeGoals;
-
-const isDraw =
-  homeGoals !== null &&
-  homeGoals !== undefined &&
-  awayGoals !== null &&
-  awayGoals !== undefined &&
-  homeGoals === awayGoals;
-
-return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-950 p-4 shadow-xl">
-      <div className="grid gap-4 sm:grid-cols-[1fr_auto_1fr_auto] sm:items-center">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:contents">
-          <div className="flex min-w-0 items-center gap-3">
-            <TeamCrest team={homeTeam} />
-            <p
-                className={`hidden truncate font-black lg:block ${
-                    homeWon ? "text-red-400" : "text-white"
-                }`}
-            >
-                {homeTeam}
+  return (
+    <MatchCard
+      homeTeam={homeTeam}
+      awayTeam={awayTeam}
+      center={<ResultScore homeGoals={homeGoals} awayGoals={awayGoals} />}
+      footer={
+        <div className="flex flex-col items-center gap-2">
+          {/*kickoffAt && (
+            <p className="text-xs text-zinc-500 sm:text-sm">
+              {new Date(kickoffAt).toLocaleString("es-ES")}
             </p>
-          </div>
+          )*/}
 
-          <div className="flex items-center justify-center gap-2">
-            <span className="rounded-xl bg-red-600 px-3 py-2 text-xl font-black sm:px-5 sm:py-3 sm:text-3xl">
-              {homeGoals ?? "-"}
-            </span>
-
-            <span className="text-lg font-black text-white sm:text-2xl">-</span>
-
-            <span className="rounded-xl bg-red-600 px-3 py-2 text-xl font-black sm:px-5 sm:py-3 sm:text-3xl">
-              {awayGoals ?? "-"}
-            </span>
-          </div>
-
-          <div className="flex min-w-0 items-center justify-end gap-3">
-            <p
-                className={`hidden truncate text-right font-black lg:block ${
-                    awayWon ? "text-red-400" : "text-white"
-                }`}
-            >
-                {awayTeam}
-            </p>
-            <TeamCrest team={awayTeam} />
-          </div>
-        </div>
-
-        <div className="flex justify-center sm:justify-end">
           <Badge variant={finished ? "success" : "default"}>
             {finished ? "Finalizado" : status}
           </Badge>
         </div>
-      </div>
-
-      {/*kickoffAt && (
-        <p className="mt-3 text-center text-xs text-zinc-500 sm:text-sm">
-          {new Date(kickoffAt).toLocaleString("es-ES")}
-        </p>
-      )*/}
-    </div>
+      }
+    />
   );
 }
