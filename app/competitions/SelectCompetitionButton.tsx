@@ -27,7 +27,7 @@ export default function SelectCompetitionButton({
     }
 
     toast.success("Competición seleccionada");
-    router.push("/dashboard/results");
+    router.push("/dashboard/home");
   }
 
   return (

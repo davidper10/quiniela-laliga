@@ -48,6 +48,9 @@ export default async function DashboardLayout({
           </div>
 
           <nav className="mt-6 hidden grid-cols-5 gap-3 md:grid">
+            <Link className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-center font-bold text-zinc-300 hover:border-red-500" href="/dashboard/home">
+              0. Inicio
+            </Link>
             <Link className="rounded-2xl border border-red-600 bg-white/5 px-4 py-4 text-center font-bold" href="/dashboard/results">
               1. Resultados
             </Link>
@@ -60,8 +63,11 @@ export default async function DashboardLayout({
             <Link className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-center font-bold text-zinc-300 hover:border-red-500" href="/dashboard/rankings">
               4. Posiciones
             </Link>
+            <Link className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-center font-bold text-zinc-300 hover:border-red-500" href="/dashboard/penalties">
+              5. Caja
+            </Link>
             <Link className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-center font-bold text-zinc-300 hover:border-red-500" href="/dashboard/settings">
-              5. Admin
+              6. Admin
             </Link>
           </nav>
         </div>

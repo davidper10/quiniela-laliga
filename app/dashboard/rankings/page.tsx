@@ -174,15 +174,15 @@ export default async function RankingsPage({ searchParams }: Props) {
                         <div>
                             <p className="text-lg font-black">{row.username}</p>
 
-                            {penalty && (
-                            <p className="mt-2 inline-block rounded-md border border-red-500/40 bg-red-500/10 px-2 py-1 text-xs font-black text-red-400">
-                                Zona de multa ({Number(penalty.amount_eur).toFixed(2)}€)
-                            </p>
-                            )}
-
-                            <div className="mt-2 flex gap-2">
-                            <Badge variant="success">Exactos {row.exactHits}</Badge>
-                            <Badge>Parciales {row.partialHits}</Badge>
+                            <div className="mt-2 flex flex-wrap items-center gap-2">
+                                {penalty && (
+                                    <div className="inline-flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-1 text-xs font-black text-red-400">
+                                        <span>🚨</span>
+                                        <span>{Number(penalty.amount_eur).toFixed(2)}€</span>
+                                    </div>
+                                )}
+                                <Badge variant="success">Exactos {row.exactHits}</Badge>
+                                <Badge>Parciales {row.partialHits}</Badge>
                             </div>
                         </div>
                         </div>

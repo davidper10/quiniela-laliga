@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Banknote } from "lucide-react";
 
 import {
     Trophy,
@@ -36,12 +37,11 @@ href:"/dashboard/rankings",
 icon:Trophy,
 label:"Clasif."
 },
-
 {
-href:"/dashboard/settings",
-icon:Settings,
-label:"Config."
-}
+  href: "/dashboard/penalties",
+  icon: Banknote,
+  label: "Caja",
+},
 
 ];
 
