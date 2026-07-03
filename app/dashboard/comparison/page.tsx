@@ -71,20 +71,21 @@ export default async function ComparisonPage({
     );
   }
 
+  const matches = matchday.matches.map((match) => ({
+    ...match,
+    home: Array.isArray(match.home) ? match.home[0] : match.home,
+    away: Array.isArray(match.away) ? match.away[0] : match.away,
+  }));
+
   const firstKickoffAt =
-    matchday.matches
-      .map(m => new Date(m.kickoff_at))
-      .sort(
-        (a,b)=>
-          a.getTime()-b.getTime()
-      )[0];
+    matches
+      .map((m) => new Date(m.kickoff_at))
+      .sort((a, b) => a.getTime() - b.getTime())[0];
 
   const isClosed =
-    matchday.status==="closed"
-    ||
-    matchday.status==="finished"
-    ||
-    new Date()>=firstKickoffAt;
+    matchday.status === "closed" ||
+    matchday.status === "finished" ||
+    new Date() >= firstKickoffAt;
 
 
   if (!isClosed) {
@@ -171,8 +172,8 @@ export default async function ComparisonPage({
             </div>
 
             <ComparisonSelector
-            matches={matchday.matches}
-            predictions={predictions ?? []}
+              matches={matches}
+              predictions={predictions ?? []}
             />
         </main>
         );

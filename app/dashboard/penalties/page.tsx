@@ -94,34 +94,43 @@ export default async function PenaltiesPage() {
           {pending.length === 0 ? (
             <p className="text-zinc-400">No hay multas pendientes.</p>
           ) : (
-            pending.map((penalty) => (
-              <div
-                key={penalty.id}
-                className="flex items-center justify-between rounded-2xl border border-white/10 bg-black p-4"
-              >
-                <div>
-                  <p className="font-black">
-                    {penalty.profiles?.username ?? "Usuario"}
-                  </p>
+            pending.map((penalty) => {
+              const profile = Array.isArray(penalty.profiles)
+                ? penalty.profiles[0]
+                : penalty.profiles;
+              const matchday = Array.isArray(penalty.matchdays)
+                ? penalty.matchdays[0]
+                : penalty.matchdays;
 
-                  <p className="text-sm text-zinc-500">
-                    Jornada {penalty.matchdays?.number ?? "-"} ·{" "}
-                    {penalty.reason}
-                  </p>
-                </div>
+              return (
+                <div
+                  key={penalty.id}
+                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-black p-4"
+                >
+                  <div>
+                    <p className="font-black">
+                      {profile?.username ?? "Usuario"}
+                    </p>
 
-                <div className="text-right">
-                  <p className="text-2xl font-black text-red-500">
-                    {Number(penalty.amount_eur).toFixed(2)}€
-                  </p>
-                  <Badge variant="warning">Pendiente</Badge>
-                </div>
+                    <p className="text-sm text-zinc-500">
+                      Jornada {matchday?.number ?? "-"} ·{" "}
+                      {penalty.reason}
+                    </p>
+                  </div>
 
-                <div className="mt-3">
-                    <MarkPaidButton penaltyId={penalty.id} />
+                  <div className="text-right">
+                    <p className="text-2xl font-black text-red-500">
+                      {Number(penalty.amount_eur).toFixed(2)}€
+                    </p>
+                    <Badge variant="warning">Pendiente</Badge>
+                  </div>
+
+                  <div className="mt-3">
+                      <MarkPaidButton penaltyId={penalty.id} />
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </Card>
@@ -144,32 +153,41 @@ export default async function PenaltiesPage() {
           {paid.length === 0 ? (
             <p className="text-zinc-400">Todavía no hay multas cobradas.</p>
           ) : (
-            paid.map((penalty) => (
-              <div
-                key={penalty.id}
-                className="flex items-center justify-between rounded-2xl border border-white/10 bg-black p-4"
-              >
-                <div>
-                  <p className="font-black">
-                    {penalty.profiles?.username ?? "Usuario"}
-                  </p>
+            paid.map((penalty) => {
+              const profile = Array.isArray(penalty.profiles)
+                ? penalty.profiles[0]
+                : penalty.profiles;
+              const matchday = Array.isArray(penalty.matchdays)
+                ? penalty.matchdays[0]
+                : penalty.matchdays;
 
-                  <p className="text-sm text-zinc-500">
-                    Jornada {penalty.matchdays?.number ?? "-"} ·{" "}
-                    {penalty.paid_at
-                      ? new Date(penalty.paid_at).toLocaleDateString("es-ES")
-                      : "Pagada"}
-                  </p>
-                </div>
+              return (
+                <div
+                  key={penalty.id}
+                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-black p-4"
+                >
+                  <div>
+                    <p className="font-black">
+                      {profile?.username ?? "Usuario"}
+                    </p>
 
-                <div className="text-right">
-                  <p className="text-2xl font-black text-emerald-400">
+                    <p className="text-sm text-zinc-500">
+                      Jornada {matchday?.number ?? "-"} ·{" "}
+                      {penalty.paid_at
+                        ? new Date(penalty.paid_at).toLocaleDateString("es-ES")
+                        : "Pagada"}
+                    </p>
+                  </div>
+
+                  <div className="text-right">
+                    <p className="text-2xl font-black text-emerald-400">
                     {Number(penalty.amount_eur).toFixed(2)}€
                   </p>
                   <Badge variant="success">Cobrada</Badge>
                 </div>
               </div>
-            ))
+              );
+            })
           )}
         </div>
       </Card>

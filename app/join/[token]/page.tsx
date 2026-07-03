@@ -70,7 +70,17 @@ export default async function JoinPage(
 
     }
 
+    const competition = Array.isArray(invite.competitions)
+      ? invite.competitions[0]
+      : invite.competitions;
 
+    if (!competition) {
+      return (
+        <main className="p-6">
+          Invitación inválida
+        </main>
+      );
+    }
 
     return(
 
@@ -93,7 +103,7 @@ export default async function JoinPage(
 
                 <h2>
 
-                    {invite.competitions.name}
+                    {competition.name}
 
                 </h2>
 
@@ -105,7 +115,7 @@ export default async function JoinPage(
 
                     {" "}
 
-                    {invite.competitions.season}
+                    {competition.season}
 
                 </p>
 

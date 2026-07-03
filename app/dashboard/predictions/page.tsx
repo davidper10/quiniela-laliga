@@ -67,7 +67,13 @@ export default async function PredictionsPage({ searchParams }: Props) {
     return <main className="p-6">Error: {matchdayError?.message}</main>;
   }
 
-  const matchIds = matchday.matches.map((match) => match.id);
+  const matches = matchday.matches.map((match) => ({
+    ...match,
+    home: Array.isArray(match.home) ? match.home[0] : match.home,
+    away: Array.isArray(match.away) ? match.away[0] : match.away,
+  }));
+
+  const matchIds = matches.map((match) => match.id);
 
   const { data: predictions } = await supabase
     .from("predictions")
@@ -119,7 +125,7 @@ export default async function PredictionsPage({ searchParams }: Props) {
         <PredictionsForm
             competitionId={competitionId}
             matchdayId={matchday.id}
-            matches={matchday.matches}
+            matches={matches}
             initialPredictions={predictions ?? []}
             isClosed={isClosed}
         />

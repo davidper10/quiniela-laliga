@@ -65,28 +65,38 @@ export default async function CompetitionsPage() {
                   Todavía no perteneces a ninguna liga.
                 </p>
               ) : (
-                memberships?.map((membership) => (
-                  <div
-                    key={membership.competition.id}
-                    className="rounded-2xl border border-white/10 bg-black p-4"
-                  >
-                    <h3 className="text-xl font-black">
-                      {membership.competition.name}
-                    </h3>
+                memberships?.map((membership) => {
+                  const competition = Array.isArray(membership.competition)
+                    ? membership.competition[0]
+                    : membership.competition;
 
-                    <p className="mt-1 text-sm text-zinc-500">
-                      Temporada {membership.competition.season}
-                    </p>
+                  if (!competition) {
+                    return null;
+                  }
 
-                    <p className="mt-1 text-sm text-zinc-400">
-                      Rol: {membership.role}
-                    </p>
+                  return (
+                    <div
+                      key={competition.id}
+                      className="rounded-2xl border border-white/10 bg-black p-4"
+                    >
+                      <h3 className="text-xl font-black">
+                        {competition.name}
+                      </h3>
 
-                    <SelectCompetitionButton
-                      competitionId={membership.competition.id}
-                    />
-                  </div>
-                ))
+                      <p className="mt-1 text-sm text-zinc-500">
+                        Temporada {competition.season}
+                      </p>
+
+                      <p className="mt-1 text-sm text-zinc-400">
+                        Rol: {membership.role}
+                      </p>
+
+                      <SelectCompetitionButton
+                        competitionId={competition.id}
+                      />
+                    </div>
+                  );
+                })
               )}
             </div>
           </section>

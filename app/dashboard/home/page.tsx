@@ -43,7 +43,13 @@ export default async function HomePage() {
     return <main>No hay jornadas todavía.</main>;
   }
 
-  const totalMatches = matchday.matches.length;
+  const matches = matchday.matches.map((match) => ({
+    ...match,
+    home: Array.isArray(match.home) ? match.home[0] : match.home,
+    away: Array.isArray(match.away) ? match.away[0] : match.away,
+  }));
+
+  const totalMatches = matches.length;
 
   const { count: predictionsCount } = await supabase
     .from("predictions")
@@ -52,10 +58,10 @@ export default async function HomePage() {
     .eq("user_id", user.id)
     .in(
       "match_id",
-      matchday.matches.map((m) => m.id)
+      matches.map((m) => m.id)
     );
 
-  const nextMatch = matchday.matches
+  const nextMatch = matches
     .filter((m) => new Date(m.kickoff_at) >= new Date())
     .sort(
       (a, b) =>

@@ -46,15 +46,22 @@ export default async function AdminMatchPage({ params }: Props) {
     return <main>Error cargando partido.</main>;
   }
 
-  if (match.matchdays?.competition_id !== competitionId) {
+  const matchday = Array.isArray(match.matchdays)
+    ? match.matchdays[0]
+    : match.matchdays;
+
+  if (matchday?.competition_id !== competitionId) {
     return <main>No tienes acceso a este partido.</main>;
   }
+
+  const homeTeam = Array.isArray(match.home) ? match.home[0] : match.home;
+  const awayTeam = Array.isArray(match.away) ? match.away[0] : match.away;
 
   return (
     <main>
       <div className="mb-6">
         <p className="text-sm font-bold uppercase tracking-widest text-red-500">
-          Admin · Jornada {match.matchdays?.number}
+          Admin · Jornada {matchday?.number}
         </p>
 
         <h1 className="text-4xl font-black">Editar partido</h1>
@@ -68,9 +75,9 @@ export default async function AdminMatchPage({ params }: Props) {
         <div className="mb-5 flex items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-black">
-              {match.home?.name ?? match.home_team}
+              {homeTeam?.name ?? match.home_team}
               <span className="mx-2 text-zinc-500">vs</span>
-              {match.away?.name ?? match.away_team}
+              {awayTeam?.name ?? match.away_team}
             </h2>
 
             <p className="mt-1 text-sm text-zinc-500">
@@ -83,8 +90,8 @@ export default async function AdminMatchPage({ params }: Props) {
 
         <MatchEditor
           matchId={match.id}
-          homeTeam={match.home?.name ?? match.home_team}
-          awayTeam={match.away?.name ?? match.away_team}
+          homeTeam={homeTeam?.name ?? match.home_team}
+          awayTeam={awayTeam?.name ?? match.away_team}
           initialHomeGoals={match.home_goals ?? 0}
           initialAwayGoals={match.away_goals ?? 0}
           initialKickoffAt={match.kickoff_at}

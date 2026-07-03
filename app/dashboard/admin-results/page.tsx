@@ -80,31 +80,36 @@ export default async function AdminResultsPage({ searchParams }: Props) {
             </p>
           </Card>
         ) : (
-          matches?.map((match) => (
-            <Link key={match.id} href={`/dashboard/admin-results/${match.id}`}>
-              <Card className="transition hover:border-red-500">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-lg font-black">
-                      {match.home?.name ?? match.home_team}
-                      <span className="mx-2 text-zinc-500">vs</span>
-                      {match.away?.name ?? match.away_team}
-                    </p>
-                    <p className="mt-1 text-sm text-zinc-500">
-                      {new Date(match.kickoff_at).toLocaleString("es-ES")}
-                    </p>
-                  </div>
+          matches?.map((match) => {
+            const home = Array.isArray(match.home) ? match.home[0] : match.home;
+            const away = Array.isArray(match.away) ? match.away[0] : match.away;
 
-                  <div className="text-right">
-                    <p className="text-2xl font-black text-red-500">
-                      {match.home_goals ?? 0} - {match.away_goals ?? 0}
-                    </p>
-                    <Badge>{match.status}</Badge>
+            return (
+              <Link key={match.id} href={`/dashboard/admin-results/${match.id}`}>
+                <Card className="transition hover:border-red-500">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-lg font-black">
+                        {home?.name ?? match.home_team}
+                        <span className="mx-2 text-zinc-500">vs</span>
+                        {away?.name ?? match.away_team}
+                      </p>
+                      <p className="mt-1 text-sm text-zinc-500">
+                        {new Date(match.kickoff_at).toLocaleString("es-ES")}
+                      </p>
+                    </div>
+
+                    <div className="text-right">
+                      <p className="text-2xl font-black text-red-500">
+                        {match.home_goals ?? 0} - {match.away_goals ?? 0}
+                      </p>
+                      <Badge>{match.status}</Badge>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            </Link>
-          ))
+                </Card>
+              </Link>
+            );
+          })
         )}
       </div>
     </main>

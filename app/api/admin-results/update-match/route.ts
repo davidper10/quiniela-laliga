@@ -34,7 +34,18 @@ export async function POST(req: Request) {
     );
   }
 
-  const competitionId = match.matchdays.competition_id;
+  const matchday = Array.isArray(match.matchdays)
+    ? match.matchdays[0]
+    : match.matchdays;
+
+  const competitionId = matchday?.competition_id;
+
+  if (!competitionId) {
+    return NextResponse.json(
+      { error: "No se pudo obtener la competición del partido" },
+      { status: 400 }
+    );
+  }
 
   const { data: membership, error: membershipError } = await supabase
     .from("competition_members")

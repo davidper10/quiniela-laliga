@@ -32,8 +32,17 @@ export async function generatePenalties({
     matchdayId,
   });
 
+  type PenaltyRow = {
+    competition_id: string;
+    user_id: string;
+    matchday_id: string;
+    reason: string;
+    amount_eur: number;
+    status: string;
+  };
+
   const rows = config
-    .map((penaltyConfig) => {
+    .map((penaltyConfig): PenaltyRow | null => {
       const user = ranking[penaltyConfig.position - 1];
 
       if (!user) return null;
@@ -47,7 +56,7 @@ export async function generatePenalties({
         status: "pending",
       };
     })
-    .filter(Boolean);
+    .filter((row): row is PenaltyRow => row !== null);
 
   if (rows.length === 0) {
     return { created: 0 };

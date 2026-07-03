@@ -52,7 +52,10 @@ export async function getRanking({
   const totals = new Map<string, RankingRow>();
 
   scores?.forEach((score) => {
-    const username = score.profiles?.username ?? "Usuario";
+    const profile = Array.isArray(score.profiles)
+      ? score.profiles[0]
+      : score.profiles;
+    const username = profile?.username ?? "Usuario";
 
     const current = totals.get(score.user_id) ?? {
       userId: score.user_id,

@@ -124,21 +124,26 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
             </h2>
 
             <div className="grid gap-3">
-              {matches.map((match) => (
-                <MatchResultCard
-                  key={match.id}
-                  homeTeam={match.home?.name ?? match.home_team}
-                  awayTeam={match.away?.name ?? match.away_team}
-                  homeShortName={match.home?.short_name}
-                  awayShortName={match.away?.short_name}
-                  homeLogoUrl={match.home?.logo_url}
-                  awayLogoUrl={match.away?.logo_url}
-                  homeGoals={match.home_goals}
-                  awayGoals={match.away_goals}
-                  kickoffAt={match.kickoff_at}
-                  status={match.status}
-                />
-              ))}
+              {matches.map((match) => {
+                const home = Array.isArray(match.home) ? match.home[0] : match.home;
+                const away = Array.isArray(match.away) ? match.away[0] : match.away;
+
+                return (
+                  <MatchResultCard
+                    key={match.id}
+                    homeTeam={home?.name ?? match.home_team}
+                    awayTeam={away?.name ?? match.away_team}
+                    homeShortName={home?.short_name}
+                    awayShortName={away?.short_name}
+                    homeLogoUrl={home?.logo_url}
+                    awayLogoUrl={away?.logo_url}
+                    homeGoals={match.home_goals}
+                    awayGoals={match.away_goals}
+                    kickoffAt={match.kickoff_at}
+                    status={match.status}
+                  />
+                );
+              })}
             </div>
           </section>
         ))}

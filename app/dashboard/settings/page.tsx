@@ -58,6 +58,11 @@ export default async function SettingsPage() {
     return <main>Error: {error.message}</main>;
   }
 
+  const normalizedMembers = members?.map((member) => ({
+    ...member,
+    profiles: Array.isArray(member.profiles) ? member.profiles[0] : member.profiles,
+  })) ?? [];
+
   return (
     <main>
       <div className="mb-6">
@@ -128,14 +133,14 @@ export default async function SettingsPage() {
           </div>
 
           <div className="grid gap-3">
-            {members?.map((member) => (
+            {normalizedMembers.map((member) => (
               <div
-                key={member.profiles.id}
+                key={member.profiles?.id}
                 className="flex items-center justify-between rounded-2xl border border-white/10 bg-black p-4"
               >
                 <div>
                   <p className="font-black">
-                    {member.profiles.username ?? "Usuario sin nombre"}
+                    {member.profiles?.username ?? "Usuario sin nombre"}
                   </p>
                   <p className="text-sm text-zinc-500">
                     Participante activo
