@@ -73,6 +73,24 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
     return <main>Error: {error.message}</main>;
   }
 
+  const sortedMatches = [...currentMatchday.matches].sort(
+    (a, b) =>
+      new Date(a.kickoff_at).getTime() - new Date(b.kickoff_at).getTime()
+  );
+
+  const matchesByDate = sortedMatches.reduce((groups, match) => {
+    const date = new Date(match.kickoff_at).toLocaleDateString("es-ES", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+    });
+
+    if (!groups[date]) groups[date] = [];
+    groups[date].push(match);
+
+    return groups;
+  }, {} as Record<string, typeof currentMatchday.matches>);
+
   return (
     <main>
       <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -98,22 +116,31 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
         />
       </div>
 
-      <div className="grid gap-3">
-        {currentMatchday.matches.map((match) => (
-        
-        <MatchResultCard
-          key={match.id}
-          homeTeam={match.home?.name ?? match.home_team}
-          awayTeam={match.away?.name ?? match.away_team}
-          homeLogoUrl={match.home?.logo_url}
-          awayLogoUrl={match.away?.logo_url}
-          homeShortName={match.home?.short_name}
-          awayShortName={match.away?.short_name}
-          homeGoals={match.home_goals}
-          awayGoals={match.away_goals}
-          kickoffAt={match.kickoff_at}
-          status={match.status}
-        />
+      <div className="grid gap-6">
+        {Object.entries(matchesByDate).map(([date, matches]) => (
+          <section key={date}>
+            <h2 className="mb-3 text-sm font-black uppercase tracking-widest text-zinc-400">
+              {date}
+            </h2>
+
+            <div className="grid gap-3">
+              {matches.map((match) => (
+                <MatchResultCard
+                  key={match.id}
+                  homeTeam={match.home?.name ?? match.home_team}
+                  awayTeam={match.away?.name ?? match.away_team}
+                  homeShortName={match.home?.short_name}
+                  awayShortName={match.away?.short_name}
+                  homeLogoUrl={match.home?.logo_url}
+                  awayLogoUrl={match.away?.logo_url}
+                  homeGoals={match.home_goals}
+                  awayGoals={match.away_goals}
+                  kickoffAt={match.kickoff_at}
+                  status={match.status}
+                />
+              ))}
+            </div>
+          </section>
         ))}
       </div>
     </main>

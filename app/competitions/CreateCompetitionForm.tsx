@@ -9,7 +9,23 @@ export default function CreateCompetitionForm() {
   const [season, setSeason] = useState("2025/2026");
 
   async function createCompetition() {
-    alert("Lo conectamos en el siguiente paso");
+    const response = await fetch("/api/competitions/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, season }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.log("CREATE COMPETITION ERROR", result);
+      alert(result.error ?? "Error creando liga");
+      return;
+    }
+
+    window.location.href = "/dashboard/home";
   }
 
   return (

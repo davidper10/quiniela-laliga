@@ -12,7 +12,7 @@ export default function SelectCompetitionButton({
   const router = useRouter();
 
   async function selectCompetition() {
-    const response = await fetch("/api/competition/select", {
+    const response = await fetch("/api/competitions/select", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

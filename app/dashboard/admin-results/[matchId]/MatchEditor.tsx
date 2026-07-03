@@ -33,9 +33,10 @@ export default function MatchEditor({
   const [status, setStatus] = useState(initialStatus);
   const [loading, setLoading] = useState(false);
 
-  async function saveChanges(nextStatus = status) {
+  async function saveChanges(nextStatus?: string) {
     setLoading(true);
 
+    const finalStatus = nextStatus ?? status;
     const kickoffAt = new Date(`${date}T${time}:00`).toISOString();
 
     const response = await fetch("/api/admin-results/update-match", {
@@ -48,11 +49,13 @@ export default function MatchEditor({
         homeGoals,
         awayGoals,
         kickoffAt,
-        status: nextStatus,
+        status: finalStatus,
       }),
     });
 
     const result = await response.json();
+    console.log("UPDATE RESULT", result);
+    
     setLoading(false);
 
     if (!response.ok) {
@@ -60,12 +63,13 @@ export default function MatchEditor({
       return;
     }
 
-    if (nextStatus === "finished") {
+    if (finalStatus === "finished") {
       router.push("/dashboard/admin-results");
       router.refresh();
       return;
     }
 
+    setStatus(finalStatus);
     router.refresh();
   }
 
@@ -141,17 +145,14 @@ export default function MatchEditor({
         <Button
           variant="secondary"
           disabled={loading}
-          onClick={() => saveChanges(status)}
+          onClick={() => saveChanges()}
         >
           {loading ? "Guardando..." : "Guardar cambios"}
         </Button>
 
         <Button
           disabled={loading}
-          onClick={() => {
-            setStatus("finished");
-            saveChanges("finished");
-          }}
+          onClick={() => saveChanges("finished")}
         >
           Finalizar partido
         </Button>

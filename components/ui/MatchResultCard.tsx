@@ -40,15 +40,18 @@ export default function MatchResultCard({
       center={<ResultScore homeGoals={homeGoals} awayGoals={awayGoals} />}
       footer={
         <div className="flex flex-col items-center gap-2">
-          {/*kickoffAt && (
-            <p className="text-xs text-zinc-500 sm:text-sm">
-              {new Date(kickoffAt).toLocaleString("es-ES")}
-            </p>
-          )*/}
-
-          <Badge variant={finished ? "success" : "default"}>
-            {finished ? "Finalizado" : status}
-          </Badge>
+          {finished ? (
+            <Badge variant="success">Finalizado</Badge>
+          ) : (
+            kickoffAt && (
+              <p className="text-xs text-zinc-500 sm:text-sm">
+                <Badge variant="warning">{new Date(kickoffAt).toLocaleTimeString("es-ES", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}</Badge>
+              </p>
+            )
+          )}
         </div>
       }
     />

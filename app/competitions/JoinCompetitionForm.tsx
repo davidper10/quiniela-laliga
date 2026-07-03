@@ -23,12 +23,14 @@ export default function JoinCompetitionForm() {
   async function joinCompetition() {
     setLoading(true);
 
-    const response = await fetch("/api/invites/join", {
+    console.log("CODE SENT:", code);
+    
+    const response = await fetch("/api/competitions/join", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ token: normalizeCode(code) }),
+      body: JSON.stringify({ code }),
     });
 
     const result = await response.json();
