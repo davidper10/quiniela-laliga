@@ -7,6 +7,8 @@ type Props = {
   awayTeam: string;
   homeLogoUrl?: string | null;
   awayLogoUrl?: string | null;
+  homeShortName?: string | null;
+  awayShortName?: string | null;
   homeGoals?: number | null;
   awayGoals?: number | null;
   kickoffAt?: string;
@@ -18,6 +20,8 @@ export default function MatchResultCard({
   awayTeam,
   homeLogoUrl,
   awayLogoUrl,
+  homeShortName,
+  awayShortName,
   homeGoals,
   awayGoals,
   kickoffAt,
@@ -31,6 +35,8 @@ export default function MatchResultCard({
       awayTeam={awayTeam}
       homeLogoUrl={homeLogoUrl}
       awayLogoUrl={awayLogoUrl}
+      homeShortName={homeShortName}
+      awayShortName={awayShortName}
       center={<ResultScore homeGoals={homeGoals} awayGoals={awayGoals} />}
       footer={
         <div className="flex flex-col items-center gap-2">

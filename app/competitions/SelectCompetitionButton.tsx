@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -31,11 +32,11 @@ export default function SelectCompetitionButton({
   }
 
   return (
-    <button
+    <Button
       onClick={selectCompetition}
-      className="mt-4 rounded bg-black px-4 py-2 text-white"
+      className="mt-4 w-full"
     >
-      Entrar
-    </button>
+      Entrar en la liga
+    </Button>
   );
 }

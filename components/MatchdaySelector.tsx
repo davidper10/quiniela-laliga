@@ -20,23 +20,37 @@ export default function MatchdaySelector({
 
   function change(value: string) {
     const params = new URLSearchParams(searchParams);
-
     params.set("j", value);
-
     router.push(`${pathname}?${params.toString()}`);
   }
 
   return (
-    <select
-      value={selected}
-      onChange={(e) => change(e.target.value)}
-      className="rounded border p-2"
-    >
-      {matchdays.map((m) => (
-        <option key={m.id} value={m.id}>
-          Jornada {m.number}
-        </option>
-      ))}
-    </select>
+    <div className="rounded-3xl border border-white/10 bg-zinc-950 p-4">
+      <div className="flex flex-wrap items-center gap-3">
+      <span className="text-sm font-bold uppercase tracking-wider text-zinc-400">
+        Jornadas
+      </span>
+
+      <div className="flex flex-wrap gap-2">
+        {matchdays.map((matchday) => {
+          const active = selected === matchday.id;
+
+          return (
+            <button
+              key={matchday.id}
+              onClick={() => change(matchday.id)}
+              className={`h-10 min-w-10 rounded-xl px-3 text-sm font-black transition ${
+                active
+                  ? "bg-red-600 text-white shadow-lg shadow-red-600/25"
+                  : "border border-white/10 bg-white/5 text-zinc-400 hover:border-red-500 hover:text-white"
+              }`}
+            >
+              J{matchday.number}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+    </div>
   );
 }

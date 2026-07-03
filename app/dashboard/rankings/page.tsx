@@ -42,54 +42,59 @@ export default async function RankingsPage({ searchParams }: Props) {
 
   return (
     <main>
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-            <p className="text-sm font-bold uppercase tracking-widest text-red-500">
-            Clasificación
-            </p>
+        <div className="mb-6 flex flex-col gap-4">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                <p className="text-sm font-bold uppercase tracking-widest text-red-500">
+                    Clasificación
+                </p>
 
-            <h1 className="text-4xl font-black">
-            {mode === "global" ? "Ranking global" : "Ranking jornada"}
-            </h1>
+                <h1 className="text-4xl font-black">
+                    {mode === "global" ? "Ranking global" : "Ranking jornada"}
+                </h1>
 
-            <p className="mt-2 text-sm text-zinc-400">
-            Ordenado por puntos, exactos y parciales.
-            </p>
-        </div>
+                <p className="mt-2 text-sm text-zinc-400">
+                    Ordenado por puntos, exactos y parciales.
+                </p>
+                </div>
 
-        {mode === "jornada" && selectedMatchdayId && (
-            <MatchdaySelector
-            matchdays={matchdays ?? []}
-            selected={selectedMatchdayId}
-            />
-        )}
-        </div>
+                <div className="rounded-2xl border border-white/10 bg-black p-1">
+                <div className="grid grid-cols-2 gap-1">
+                    <a
+                    href="/dashboard/rankings?mode=global"
+                    className={`rounded-xl px-6 py-3 text-center text-sm font-black transition ${
+                        mode === "global"
+                        ? "bg-red-600 text-white"
+                        : "text-zinc-500 hover:text-white"
+                    }`}
+                    >
+                    Global
+                    </a>
 
-        <div className="mb-6 flex gap-2">
-        <a
-            href="/dashboard/rankings?mode=global"
-            className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
-            mode === "global"
-                ? "bg-red-600 text-white shadow-lg shadow-red-600/25"
-                : "border border-white/15 bg-white/5 text-zinc-300 hover:bg-white/10"
-            }`}
-        >
-            Global
-        </a>
+                    <a
+                    href={`/dashboard/rankings?mode=jornada${
+                        selectedMatchdayId ? `&j=${selectedMatchdayId}` : ""
+                    }`}
+                    className={`rounded-xl px-6 py-3 text-center text-sm font-black transition ${
+                        mode === "jornada"
+                        ? "bg-red-600 text-white"
+                        : "text-zinc-500 hover:text-white"
+                    }`}
+                    >
+                    Por Jornada
+                    </a>
+                </div>
+                </div>
+            </div>
 
-        <a
-            href={`/dashboard/rankings?mode=jornada${
-            selectedMatchdayId ? `&j=${selectedMatchdayId}` : ""
-            }`}
-            className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
-            mode === "jornada"
-                ? "bg-red-600 text-white shadow-lg shadow-red-600/25"
-                : "border border-white/15 bg-white/5 text-zinc-300 hover:bg-white/10"
-            }`}
-        >
-            Jornada
-        </a>
-        </div>
+            {mode === "jornada" && selectedMatchdayId && (
+                <MatchdaySelector
+                matchdays={matchdays ?? []}
+                selected={selectedMatchdayId}
+                />
+            )}
+        </div>        
+
 
         <div className="grid gap-4">
         {ranking.length === 0 ? (

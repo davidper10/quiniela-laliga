@@ -6,6 +6,8 @@ type Props = {
   awayTeam: string;
   homeLogoUrl?: string | null;
   awayLogoUrl?: string | null;
+  homeShortName?: string | null;
+  awayShortName?: string | null;
   homeValue: string;
   awayValue: string;
   disabled?: boolean;
@@ -18,6 +20,8 @@ export default function MatchPredictionCard({
   awayTeam,
   homeLogoUrl, 
   awayLogoUrl, 
+  homeShortName,
+  awayShortName,
   homeValue,
   awayValue,
   disabled = false,
@@ -30,6 +34,8 @@ export default function MatchPredictionCard({
       awayTeam={awayTeam}
       homeLogoUrl={homeLogoUrl}
       awayLogoUrl={awayLogoUrl}
+      homeShortName={homeShortName}
+      awayShortName={awayShortName}
       center={
         <PredictionScoreInputs
           homeValue={homeValue}

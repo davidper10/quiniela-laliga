@@ -5,6 +5,8 @@ export default function MatchCard({
   awayTeam,
   homeLogoUrl,
   awayLogoUrl,
+  homeShortName, 
+  awayShortName,
   center,
   footer,
 }: {
@@ -12,6 +14,8 @@ export default function MatchCard({
   awayTeam: string;
   homeLogoUrl?: string | null;
   awayLogoUrl?: string | null;
+  homeShortName?: string | null;
+  awayShortName?: string | null;
   center: React.ReactNode;
   footer?: React.ReactNode;
 }) {
@@ -19,7 +23,11 @@ export default function MatchCard({
     <div className="rounded-2xl border border-white/10 bg-zinc-950 p-4 shadow-xl">
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <TeamCrest team={homeTeam} logoUrl={homeLogoUrl} />
+            <TeamCrest
+                team={homeTeam}
+                shortName={homeShortName}
+                logoUrl={homeLogoUrl}
+            />
           <p className="hidden truncate font-black lg:block">{homeTeam}</p>
         </div>
 
@@ -29,7 +37,11 @@ export default function MatchCard({
           <p className="hidden truncate text-right font-black lg:block">
             {awayTeam}
           </p>
-          <TeamCrest team={awayTeam} logoUrl={awayLogoUrl} />
+          <TeamCrest 
+            team={awayTeam} 
+            shortName={awayShortName} 
+            logoUrl={awayLogoUrl} 
+          />
         </div>
       </div>
 

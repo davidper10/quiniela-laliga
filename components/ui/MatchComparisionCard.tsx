@@ -6,6 +6,8 @@ type Props = {
   awayTeam: string;
   homeLogoUrl?: string | null;
   awayLogoUrl?: string | null;
+  homeShortName?: string | null;
+  awayShortName?: string | null;
   homeGoals?: number | null;
   awayGoals?: number | null;
 };
@@ -15,6 +17,8 @@ export default function MatchComparisonCard({
   awayTeam,
   homeLogoUrl, 
   awayLogoUrl,
+  homeShortName,
+  awayShortName,
   homeGoals,
   awayGoals,
 }: Props) {
@@ -24,6 +28,8 @@ export default function MatchComparisonCard({
       awayTeam={awayTeam}
       homeLogoUrl={homeLogoUrl}
       awayLogoUrl={awayLogoUrl}
+      homeShortName={homeShortName}
+      awayShortName={awayShortName}
       center={<ResultScore homeGoals={homeGoals} awayGoals={awayGoals} />}
     />
   );

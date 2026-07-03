@@ -75,7 +75,7 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
 
   return (
     <main>
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-bold uppercase tracking-widest text-red-500">
             Jornada
@@ -84,18 +84,19 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
             Resultados J{currentMatchday.number}
           </h1>
         </div>
-
-        <MatchdaySelector
-          matchdays={matchdays ?? []}
-          selected={selectedMatchdayId}
-        />
-      </div>
-
-      <MatchdayStatusCard
+        <MatchdayStatusCard
         number={currentMatchday.number}
         status={currentMatchday.status}
         firstKickoffAt={currentMatchday.first_kickoff_at}
       />
+      </div>
+
+      <div className="mb-6">
+        <MatchdaySelector
+            matchdays={matchdays ?? []}
+            selected={selectedMatchdayId}
+        />
+      </div>
 
       <div className="grid gap-3">
         {currentMatchday.matches.map((match) => (
@@ -106,6 +107,8 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
           awayTeam={match.away?.name ?? match.away_team}
           homeLogoUrl={match.home?.logo_url}
           awayLogoUrl={match.away?.logo_url}
+          homeShortName={match.home?.short_name}
+          awayShortName={match.away?.short_name}
           homeGoals={match.home_goals}
           awayGoals={match.away_goals}
           kickoffAt={match.kickoff_at}

@@ -97,6 +97,8 @@ export default function PredictionsForm({
           awayTeam={match.away?.name ?? match.away_team}
           homeLogoUrl={match.home?.logo_url}
           awayLogoUrl={match.away?.logo_url}
+          homeShortName={match.home?.short_name}
+          awayShortName={match.away?.short_name}
           homeValue={values[match.id].home}
           awayValue={values[match.id].away}
           disabled={isClosed}

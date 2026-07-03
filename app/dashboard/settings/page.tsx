@@ -4,6 +4,26 @@ import Badge from "@/components/ui/Badge";
 import InviteSection from "./InviteSelection";
 import RebuildScoresButton from "./RebuildScoresButton";
 import PenaltiesConfig from "./PenaltiesConfig";
+import Button from "@/components/ui/Button";
+import DevToolsCard from "@/components/settings/DevToolsCard";
+
+async function generateDemo() {
+
+    const res = await fetch("/api/dev/seed",{
+        method:"POST"
+    });
+
+    if(res.ok){
+
+        alert("Datos demo generados");
+
+    }else{
+
+        alert("Ha ocurrido un error");
+
+    }
+
+}
 
 export default async function SettingsPage() {
   const { supabase, competitionId, competition } =
@@ -131,6 +151,9 @@ export default async function SettingsPage() {
         </Card>
 
         <InviteSection />
+
+        <DevToolsCard />
+
       </div>
     </main>
   );
