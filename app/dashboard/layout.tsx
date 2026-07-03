@@ -10,7 +10,13 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { competition } = await getActiveCompetition();
+  const { competition, supabase, user } = await getActiveCompetition();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username, display_name, avatar_url")
+    .eq("id", user.id)
+    .single();
 
   return (
     <div className="min-h-screen bg-black pb-24 text-white">
@@ -53,6 +59,26 @@ export default async function DashboardLayout({
                 className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
               >
                 Cambiar Liga
+              </Link>
+
+              <Link
+                href="/dashboard/profile"
+                className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-white/15 bg-red-600 text-sm font-black text-white"
+              >
+                {profile?.avatar_url ? (
+                  <Image
+                    src={profile.avatar_url}
+                    alt={profile.display_name ?? profile.username ?? "Perfil"}
+                    width={44}
+                    height={44}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  (profile?.display_name?.[0] ??
+                    profile?.username?.[0] ??
+                    user.email?.[0] ??
+                    "U").toUpperCase()
+                )}
               </Link>
 
               <DashboardMenu />

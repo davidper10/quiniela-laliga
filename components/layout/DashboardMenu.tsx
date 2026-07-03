@@ -12,6 +12,7 @@ const items = [
   { href: "/dashboard/penalties", label: "Caja" },
   { href: "/dashboard/admin-results", label: "Actualizar resultados" },
   { href: "/dashboard/settings", label: "Configuración" },
+  { href: "/dashboard/profile", label: "Mi perfil" },
 ];
 
 export default function DashboardMenu() {
