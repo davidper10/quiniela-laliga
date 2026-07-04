@@ -20,69 +20,45 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-black pb-24 text-white">
-      <header className="border-b border-red-950/60 bg-zinc-950 px-6 py-5">
-        <div className="mx-auto max-w-6xl">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <div className="mb-2 flex items-center gap-3">
-                <div className="flex h-16 w-16 items-center justify-center">
-                  <Image
-                    src="/brand/logo.png"
-                    alt="GolScore LaLiga"
-                    width={64}
-                    height={64}
-                    priority
-                    className="object-contain"
-                  />
-                </div>
+      <header className="border-b border-red-950/60 bg-zinc-950 px-4 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <Image
+              src="/brand/logo.png"
+              alt="GolScore LaLiga"
+              width={44}
+              height={44}
+              priority
+              className="shrink-0 object-contain"
+            />
 
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-xl font-black tracking-tight">
-                      GOLSCORE LALIGA
-                    </h1>
-                  </div>
+            <p className="truncate text-base font-black">
+              {competition.name}
+            </p>
+          </div>
 
-                  <p className="text-sm text-zinc-400">
-                    Competición:{" "}
-                    <span className="font-semibold text-white">
-                      {competition.name}
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/dashboard/profile"
+              className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-white/15 bg-red-600 text-sm font-black text-white"
+            >
+              {profile?.avatar_url ? (
+                <Image
+                  src={profile.avatar_url}
+                  alt={profile.display_name ?? profile.username ?? "Perfil"}
+                  width={40}
+                  height={40}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                (profile?.display_name?.[0] ??
+                  profile?.username?.[0] ??
+                  user.email?.[0] ??
+                  "U").toUpperCase()
+              )}
+            </Link>
 
-            <div className="flex items-center gap-3">
-              <Link
-                href="/competitions"
-                className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
-              >
-                Cambiar Liga
-              </Link>
-
-              <Link
-                href="/dashboard/profile"
-                className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-white/15 bg-red-600 text-sm font-black text-white"
-              >
-                {profile?.avatar_url ? (
-                  <Image
-                    src={profile.avatar_url}
-                    alt={profile.display_name ?? profile.username ?? "Perfil"}
-                    width={44}
-                    height={44}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  (profile?.display_name?.[0] ??
-                    profile?.username?.[0] ??
-                    user.email?.[0] ??
-                    "U").toUpperCase()
-                )}
-              </Link>
-
-              <DashboardMenu />
-            </div>
+            <DashboardMenu />
           </div>
         </div>
       </header>
