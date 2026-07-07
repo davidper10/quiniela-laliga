@@ -96,6 +96,7 @@ export async function POST(request: Request) {
   let penaltiesCreated = 0;
 
   if (matchdayId) {
+    console.log("Entro en rebuild");
     const result = await generatePenalties({
       supabase,
       competitionId,
