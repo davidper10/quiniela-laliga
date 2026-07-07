@@ -33,7 +33,7 @@ export default function RebuildScoresButton({
       alert(result.error ?? "Error recalculando");
       return;
     }
-
+    console.log("Multas generadas: ", result.penaltiesCreated);
     alert(
       `Puntuaciones actualizadas: ${result.updated}. Multas generadas: ${result.penaltiesCreated}`
     );
