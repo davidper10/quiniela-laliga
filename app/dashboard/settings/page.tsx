@@ -44,7 +44,7 @@ export default async function SettingsPage() {
     .from("matchdays")
     .select("id, number")
     .eq("competition_id", competitionId)
-    .order("number", { ascending: true })
+    .order("number", { ascending: false })
     .limit(1)
     .single();
 
