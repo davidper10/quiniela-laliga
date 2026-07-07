@@ -104,8 +104,10 @@ export async function POST(request: Request) {
     });
 
     penaltiesCreated = result.created;
+  } else {
+    console.log("No ntro en rebuild");
   }
-
+  
   const { error: upsertError } = await supabase.from("scores").upsert(rows, {
     onConflict: "competition_id,user_id,match_id",
   });
