@@ -21,26 +21,26 @@ export default function MatchCard({
 }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-zinc-950 p-4 shadow-xl">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
         <div className="flex min-w-0 items-center gap-3">
-            <TeamCrest
-                team={homeTeam}
-                shortName={homeShortName}
-                logoUrl={homeLogoUrl}
-            />
+          <TeamCrest
+            team={homeTeam}
+            shortName={homeShortName}
+            logoUrl={homeLogoUrl}
+          />
           <p className="hidden truncate font-black lg:block">{homeTeam}</p>
         </div>
 
-        <div>{center}</div>
+        <div className="min-w-0 flex justify-center">{center}</div>
 
         <div className="flex min-w-0 items-center justify-end gap-3">
           <p className="hidden truncate text-right font-black lg:block">
             {awayTeam}
           </p>
-          <TeamCrest 
-            team={awayTeam} 
-            shortName={awayShortName} 
-            logoUrl={awayLogoUrl} 
+          <TeamCrest
+            team={awayTeam}
+            shortName={awayShortName}
+            logoUrl={awayLogoUrl}
           />
         </div>
       </div>

@@ -7,7 +7,7 @@ const items = [
   { href: "/dashboard/home", label: "Inicio" },
   { href: "/dashboard/results", label: "Resultados" },
   { href: "/dashboard/predictions", label: "Pronósticos" },
-  { href: "/dashboard/comparison", label: "Comparador" },
+  /*{ href: "/dashboard/comparison", label: "Comparador" },*/
   { href: "/dashboard/rankings", label: "Clasificación" },
   { href: "/dashboard/penalties", label: "Caja" },
   { href: "/dashboard/admin-results", label: "Actualizar resultados" },

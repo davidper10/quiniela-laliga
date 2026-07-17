@@ -4,6 +4,7 @@ import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import MatchResultCard from "@/components/ui/MatchResultCard";
 import MatchdayStatusCard from "@/components/ui/MatchdayStatusCard";
+import { getDefaultMatchdayId } from "@/lib/currentMatchday";
 
 type ResultsPageProps = {
   searchParams: Promise<{
@@ -24,7 +25,7 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
 
   const { data: matchdays, error: matchdaysError } = await supabase
     .from("matchdays")
-    .select("id, number")
+    .select("id, number, first_kickoff_at, last_kickoff_at, status")
     .eq("competition_id", competitionId)
     .order("number", { ascending: true });
 
@@ -32,7 +33,7 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
     return <main>Error: {matchdaysError.message}</main>;
   }
 
-  const selectedMatchdayId = j ?? matchdays?.[0]?.id;
+  const selectedMatchdayId = j ?? getDefaultMatchdayId(matchdays ?? []);
 
   if (!selectedMatchdayId) {
     return <p>No hay jornadas todavía.</p>;
@@ -69,8 +70,8 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
     .eq("id", selectedMatchdayId)
     .single();
 
-  if (error) {
-    return <main>Error: {error.message}</main>;
+  if (error || !currentMatchday) {
+    return <main>Error: {error?.message ?? "Jornada no encontrada"}</main>;
   }
 
   const sortedMatches = [...currentMatchday.matches].sort(

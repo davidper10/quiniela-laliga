@@ -2,21 +2,23 @@ import { getActiveCompetition } from "@/lib/activeCompetition";
 import MatchdaySelector from "@/components/MatchdaySelector";
 import PredictionsForm from "./PredictionsForm";
 import MatchdayStatusCard from "@/components/ui/MatchdayStatusCard";
+import { getDefaultMatchdayId } from "@/lib/currentMatchday";
 
 type Props = {
   searchParams: Promise<{
     j?: string;
+    user?: string;
   }>;
 };
 
 export default async function PredictionsPage({ searchParams }: Props) {
-  const { j } = await searchParams;
+  const { j, user: selectedUserParam } = await searchParams;
 
   const { supabase, competitionId, user } = await getActiveCompetition();
 
   const { data: matchdays, error: matchdaysError } = await supabase
     .from("matchdays")
-    .select("id, number")
+    .select("id, number, first_kickoff_at, last_kickoff_at, status")
     .eq("competition_id", competitionId)
     .order("number", { ascending: true });
 
@@ -24,7 +26,34 @@ export default async function PredictionsPage({ searchParams }: Props) {
     return <main className="p-6">Error: {matchdaysError.message}</main>;
   }
 
-  const selectedMatchdayId = j ?? matchdays?.[0]?.id;
+  const selectedMatchdayId = j ?? getDefaultMatchdayId(matchdays ?? []);
+
+  const { data: members } = await supabase
+    .from("competition_members")
+    .select(`
+        user_id,
+        role,
+        profiles (
+        username,
+        display_name,
+        avatar_url
+        )
+    `)
+    .eq("competition_id", competitionId);
+
+    const selectedUserId = selectedUserParam ?? user.id;
+
+    const selectedMember = members?.find(
+      (member) => member.user_id === selectedUserId
+      );
+
+    const selectedMemberProfile = selectedMember
+      ? Array.isArray(selectedMember.profiles)
+        ? selectedMember.profiles[0]
+        : selectedMember.profiles
+      : null;
+
+    const isOwnUser = selectedUserId === user.id;
 
   if (!selectedMatchdayId) {
     return (
@@ -79,7 +108,7 @@ export default async function PredictionsPage({ searchParams }: Props) {
     .from("predictions")
     .select("match_id, predicted_home_goals, predicted_away_goals")
     .eq("competition_id", competitionId)
-    .eq("user_id", user.id)
+    .eq("user_id", selectedUserId)
     .in("match_id", matchIds);
 
   const firstKickoffAt = matchday.matches
@@ -100,7 +129,7 @@ export default async function PredictionsPage({ searchParams }: Props) {
             </p>
 
             <h1 className="text-4xl font-black">
-            Tus resultados J{matchday.number}
+            Resultados J{matchday.number}
             </h1>
 
             <p className="mt-2 text-sm text-zinc-400">
@@ -116,11 +145,13 @@ export default async function PredictionsPage({ searchParams }: Props) {
         />
         </div>
 
+        {/*
         <MatchdayStatusCard
             number={matchday.number}
             status={matchday.status}
             firstKickoffAt={matchday.first_kickoff_at}
         />
+        */}
 
         <PredictionsForm
             competitionId={competitionId}
@@ -128,6 +159,14 @@ export default async function PredictionsPage({ searchParams }: Props) {
             matches={matches}
             initialPredictions={predictions ?? []}
             isClosed={isClosed}
+            isOwnUser={isOwnUser}
+            selectedUserName={
+            selectedMemberProfile?.display_name ??
+            selectedMemberProfile?.username ??
+            "Usuario"
+            }
+            members={members ?? []}
+            selectedUserId={selectedUserId}
         />
     </main>
     );

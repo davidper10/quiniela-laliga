@@ -14,9 +14,9 @@ export default function PredictionScoreInputs({
   onAwayChange: (value: string) => void;
 }) {
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2 min-w-0">
       <Input
-        className="h-12 w-14 px-0 text-center text-xl font-black sm:h-16 sm:w-20 sm:text-3xl"
+        className="h-10 w-12 min-w-[3rem] px-0 text-center text-lg font-black sm:h-12 sm:w-16 sm:text-xl"
         type="number"
         min="0"
         disabled={disabled}
@@ -24,10 +24,10 @@ export default function PredictionScoreInputs({
         onChange={(e) => onHomeChange(e.target.value)}
       />
 
-      <span className="text-lg font-black text-white sm:text-2xl">-</span>
+      <span className="text-base font-black text-white sm:text-lg">-</span>
 
       <Input
-        className="h-12 w-14 px-0 text-center text-xl font-black sm:h-16 sm:w-20 sm:text-3xl"
+        className="h-10 w-12 min-w-[3rem] px-0 text-center text-lg font-black sm:h-12 sm:w-16 sm:text-xl"
         type="number"
         min="0"
         disabled={disabled}
