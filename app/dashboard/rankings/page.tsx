@@ -22,10 +22,15 @@ export default async function RankingsPage({ searchParams }: Props) {
     .eq("competition_id", competitionId)
     .order("number", { ascending: true });
 
-  const { data: penaltiesConfig } = await supabase
-    .from("penalties_config")
-    .select("position, amount_eur")
-    .eq("competition_id", competitionId);
+  const penaltiesConfig =
+    mode === "jornada"
+      ? (
+          await supabase
+            .from("penalties_config")
+            .select("position, amount_eur")
+            .eq("competition_id", competitionId)
+        ).data
+      : null;
 
   const selectedMatchdayId = j ?? matchdays?.[0]?.id;
 
@@ -34,11 +39,11 @@ export default async function RankingsPage({ searchParams }: Props) {
     competitionId,
     mode,
     matchdayId: selectedMatchdayId,
-});
+  });
 
   function getPenaltyForPosition(position: number) {
     return penaltiesConfig?.find((p) => p.position === position);
-}
+  }
 
   return (
     <main>
@@ -106,7 +111,7 @@ export default async function RankingsPage({ searchParams }: Props) {
         ) : (
             ranking.map((row, index) => {
                 const position = index + 1;
-                const penalty = getPenaltyForPosition(position);
+                const penalty = mode === "jornada" ? getPenaltyForPosition(position) : null;
 
                 return (
                     <Card key={row.username}>
@@ -126,8 +131,10 @@ export default async function RankingsPage({ searchParams }: Props) {
                                         <span>{Number(penalty.amount_eur).toFixed(2)}€</span>
                                     </div>
                                 )}
+                                {/*
                                 <Badge variant="success">Exactos {row.exactHits}</Badge>
                                 <Badge>Parciales {row.partialHits}</Badge>
+                                */}
                             </div>
                         </div>
                         </div>
