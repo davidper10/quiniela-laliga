@@ -56,21 +56,21 @@ export default async function PenaltiesPage() {
         </p>
       </div>
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-2">
+      <div className="mb-6 grid grid-cols-2 gap-3">
         <Card>
-          <p className="text-sm font-bold uppercase text-zinc-500">
+          <p className="text-[11px] font-bold uppercase text-zinc-500">
             Bote acumulado
           </p>
-          <p className="mt-2 text-4xl font-black text-white">
+          <p className="mt-2 text-3xl font-black text-white md:text-4xl">
             {potTotal.toFixed(2)}€
           </p>
         </Card>
 
         <Card>
-          <p className="text-sm font-bold uppercase text-zinc-500">
-            Pendiente de cobro
+          <p className="text-[11px] font-bold uppercase text-zinc-500">
+            Pendiente
           </p>
-          <p className="mt-2 text-4xl font-black text-red-500">
+          <p className="mt-2 text-3xl font-black text-red-500 md:text-4xl">
             {pendingTotal.toFixed(2)}€
           </p>
         </Card>
@@ -82,9 +82,6 @@ export default async function PenaltiesPage() {
             <p className="text-sm font-bold uppercase tracking-widest text-red-500">
               Pendientes
             </p>
-            <h2 className="mt-2 text-2xl font-black">
-              Multas por pagar
-            </h2>
           </div>
 
           <Badge>{pending.length} pendientes</Badge>
@@ -107,26 +104,21 @@ export default async function PenaltiesPage() {
                   key={penalty.id}
                   className="flex items-center justify-between rounded-2xl border border-white/10 bg-black p-4"
                 >
-                  <div>
+                  <div className="flex-1">
                     <p className="font-black">
                       {profile?.username ?? "Usuario"}
                     </p>
 
-                    <p className="text-sm text-zinc-500">
-                      Jornada {matchday?.number ?? "-"} ·{" "}
-                      {penalty.reason}
+                    <p className="text-xs text-zinc-500 sm:text-sm">
+                      Jornada {matchday?.number ?? "-"} · {penalty.reason}
                     </p>
                   </div>
 
-                  <div className="text-right">
+                  <div className="flex flex-col items-end gap-2">
                     <p className="text-2xl font-black text-red-500">
                       {Number(penalty.amount_eur).toFixed(2)}€
                     </p>
-                    <Badge variant="warning">Pendiente</Badge>
-                  </div>
-
-                  <div className="mt-3">
-                      <MarkPaidButton penaltyId={penalty.id} />
+                    <MarkPaidButton penaltyId={penalty.id} />
                   </div>
                 </div>
               );
@@ -141,9 +133,6 @@ export default async function PenaltiesPage() {
             <p className="text-sm font-bold uppercase tracking-widest text-red-500">
               Historial
             </p>
-            <h2 className="mt-2 text-2xl font-black">
-              Multas cobradas
-            </h2>
           </div>
 
           <Badge variant="success">{paid.length} cobradas</Badge>
@@ -183,7 +172,7 @@ export default async function PenaltiesPage() {
                     <p className="text-2xl font-black text-emerald-400">
                     {Number(penalty.amount_eur).toFixed(2)}€
                   </p>
-                  <Badge variant="success">Cobrada</Badge>
+                  {/**<Badge variant="success">Cobrada</Badge> */}
                 </div>
               </div>
               );

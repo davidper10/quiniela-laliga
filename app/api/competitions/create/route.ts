@@ -22,14 +22,17 @@ export async function POST(req: Request) {
     return crypto.randomUUID().replaceAll("-", "").slice(0, 6).toUpperCase();
   }
 
+  const inviteCode = generateInviteCode();
+
   const { data: competition, error: competitionError } = await supabase
     .from("competitions")
     .insert({
       name,
       season,
       admin_user_id: user.id,
+      invite_code: inviteCode,
     })
-    .select("id")
+    .select("id, invite_code")
     .single();
 
   if (competitionError) {
@@ -45,20 +48,32 @@ export async function POST(req: Request) {
       competition_id: competition.id,
       user_id: user.id,
       role: "admin",
-      invite_code: generateInviteCode(),
     });
 
   if (memberError) {
-    return NextResponse.json({ error: memberError.message }, { status: 500 });
+    return NextResponse.json(
+      { error: memberError.message },
+      { status: 500 }
+    );
   }
 
-  await supabase
+  const { error: profileError } = await supabase
     .from("profiles")
-    .update({ active_competition_id: competition.id })
+    .update({
+      active_competition_id: competition.id,
+    })
     .eq("id", user.id);
+
+  if (profileError) {
+    return NextResponse.json(
+      { error: profileError.message },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({
     ok: true,
     competitionId: competition.id,
+    inviteCode: competition.invite_code,
   });
 }

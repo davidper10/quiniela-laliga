@@ -3,6 +3,7 @@ import { getActiveCompetition } from "@/lib/activeCompetition";
 import MatchdaySelector from "@/components/MatchdaySelector";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import { getDefaultMatchdayId } from "@/lib/currentMatchday";
 
 type Props = {
   searchParams: Promise<{ j?: string }>;
@@ -14,11 +15,11 @@ export default async function AdminResultsPage({ searchParams }: Props) {
 
   const { data: matchdays } = await supabase
     .from("matchdays")
-    .select("id, number")
+    .select("id, number, first_kickoff_at, last_kickoff_at, status")
     .eq("competition_id", competitionId)
     .order("number", { ascending: true });
 
-  const selectedMatchdayId = j ?? matchdays?.[0]?.id;
+  const selectedMatchdayId = j ?? getDefaultMatchdayId(matchdays ?? []);
 
   if (!selectedMatchdayId) {
     return <main>No hay jornadas.</main>;

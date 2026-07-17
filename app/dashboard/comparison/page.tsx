@@ -1,6 +1,15 @@
+
+import { redirect } from "next/navigation";
+
+export default function ComparisonPage() {
+  redirect("/dashboard/predictions");
+}
+
+/*
 import { getActiveCompetition } from "@/lib/activeCompetition";
 import MatchdaySelector from "@/components/MatchdaySelector";
 import ComparisonSelector from "./ComparisionSelector";
+import { getDefaultMatchdayId } from "@/lib/currentMatchday";
 
 type Props = {
   searchParams: Promise<{
@@ -18,14 +27,12 @@ export default async function ComparisonPage({
 
   const { data: matchdays } = await supabase
     .from("matchdays")
-    .select("id,number")
+    .select("id, number, first_kickoff_at, last_kickoff_at, status")
     .eq("competition_id", competitionId)
-    .order("number");
+    .order("number", { ascending: true });
 
-  const selectedMatchdayId =
-    j ??
-    matchdays?.[0]?.id;
-
+  const selectedMatchdayId = j ?? getDefaultMatchdayId(matchdays ?? []);
+  
   if (!selectedMatchdayId) {
     return (
       <main className="p-6">
@@ -179,3 +186,4 @@ export default async function ComparisonPage({
         );
 
 }
+ */

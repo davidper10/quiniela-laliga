@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Button from "@/components/ui/Button";
 
 export default function MarkPaidButton({
   penaltyId,
@@ -30,8 +29,11 @@ export default function MarkPaidButton({
   }
 
   return (
-    <Button variant="secondary" onClick={markPaid}>
+    <button
+      onClick={markPaid}
+      className="rounded-lg border border-red-500 px-3 py-1 text-sm font-semibold text-red-500 transition hover:bg-red-500/10"
+    >
       ✓ Cobrada
-    </Button>
+    </button>
   );
 }
